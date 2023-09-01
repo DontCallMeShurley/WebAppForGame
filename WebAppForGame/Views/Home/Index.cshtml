@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+
+<div id="page-wrapper">
+    <div class="container">
+        <section id="pricing">
+            <div class="product" id="tenor">
+                <div class="level">5 попыток</div>
+                <h2>100 руб.</h2>
+                <p>Простые 5 попыток</p>
+                <button btn btn-pay btn-pay-1>Выбрать</button>
+            </div>
+            <div class="product" id="bass">
+                <div class="level">10 попыток</div>
+                <h2>180 руб.</h2>
+                <p>10 попыток по выгодной цене</p>
+                <button btn btn-pay btn-pay-2>Выбрать</button>
+            </div>
+            <div class="product" id="valve">
+                <div class="level">30 попыток</div>
+                <h2>500 руб.</h2>
+                <p>Самое выгодное предложение</p>
+                <button btn btn-pay btn-pay-3>Выбрать</button>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script src="https://paymaster.ru/cpay/sdk/payment-widget.js"></script>
+
+<!-- Если вы хотите использовать нашу кнопку, тогда необходимо встроить этот фрагмент на своей странице там, где должна быть кнопка. -->
+<!-- Если вы хотите использовать свою кнопку, тогда этот фрагмент добавлять не нужно, но у своей кнопки необходимо добавить атрибут "btn-pay-3". -->
+<style>
+    button[btn-pay] {
+        display: inline-block;
+        padding: 16px 24px;
+        border-radius: 8px;
+
+        background-color: #d9c404;
+        font-size: 16px;
+        font-family: "Lato", "Arial", sans-serif;
+        line-height: 16px;
+        outline: none;
+        border: none;
+
+    }
+
+        button[btn-pay]:hover {
+            opacity: 0.9;
+            cursor: pointer;
+        }
+</style>
+
+
+<!-- Встройте этот фрагмент внизу страницы, в конце тега body. -->
+<script>
+    if (document.querySelector("[btn-pay-3]")) {
+        document.querySelector("[btn-pay-3]").addEventListener("click", function () {
+            var paymentWidget = new cpay.PaymentWidget();
+            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "30 попыток" }, "amount": { "currency": "RUB", "value": 500 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "30 попыток", "description": null, "imageUrl": null }, "fields": null } });
+        });
+    }
+    if (document.querySelector("[btn-pay-2]")) {
+        document.querySelector("[btn-pay-2]").addEventListener("click", function () {
+            var paymentWidget = new cpay.PaymentWidget();
+            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "10 попыток" }, "amount": { "currency": "RUB", "value": 180 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "10 попыток", "description": null, "imageUrl": null }, "fields": null } });
+        });
+    }
+    if (document.querySelector("[btn-pay-1]")) {
+        document.querySelector("[btn-pay-1]").addEventListener("click", function () {
+            var paymentWidget = new cpay.PaymentWidget();
+            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "5 попыток" }, "amount": { "currency": "RUB", "value": 100 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "5 попыток", "description": null, "imageUrl": null }, "fields": null } });
+        });
+    }
+</script>

@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SpeedBox магазин</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebAppForGame.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+
+                <li class="nav-item">
+                    <a href="/" class="nav-link link-dark px-2"><b>Главная страница</b></a>
+                </li>
+                <li class="nav-item" align="right">
+                    <a href="https://disk.yandex.ru/d/Xucs1PWe74x00w" target="_blank" class="nav-link link-dark px-2"><b>Скачать игру</b></a>
+                </li>
+                <li>
+                    <a href="/files/oferta.pdf" target="_blank" class="nav-link link-dark px-2"><b>Публичная оферта</b></a>
+                </li>
+                <li>
+                    <a href="/Home/HowToGet" class="nav-link link-dark px-2"><b>Способ получения</b></a>
+                </li>
+                <li>
+                    <a href="/Home/Contacts" class="nav-link link-dark px-2"><b>Контакты</b></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div id="footer">
+        <h5>
+            2023 - SpeedBox. Официальный магазин
+            <img src="/files/payment system logos.png" />
+        </h5>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
