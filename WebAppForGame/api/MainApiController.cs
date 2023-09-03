@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System.Text;
 using WebAppForGame.Data;
 using WebAppForGame.Dtos;
@@ -41,10 +42,10 @@ namespace WebAppForGame.api
 
         [Route("log_gameover")]
         [HttpPost]
-        public async Task<ActionResult> log_gameover(log_gameoverDto log_Gameover)
+        public async Task<ActionResult> log_gameover(log_gameover_dto log_Gameover)
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
-            { 
+            {
                 try
                 {
                     var gameover_log = new log_gameover()
@@ -66,7 +67,7 @@ namespace WebAppForGame.api
         }
 
         [Route("GetMappedUserId")]
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult> GetMappedUserId(string userid)
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
@@ -95,6 +96,65 @@ namespace WebAppForGame.api
             }
         }
 
+        [Route("GetSerialNumber")]
+        [HttpGet]
+        public async Task<ActionResult> GetSerialNumber(string userid)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                try
+                {
+                    var sn = await db.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
+                    if (sn == null)
+                    {
+                        var mappedId = getUniqueId(4, true);
+
+                        sn = new SerialNumbers
+                        {
+                            user_id = userid,
+                            serial_number = mappedId
+                        };
+                        db.SerialNumbers.Add(sn);
+                        db.SaveChanges();
+                    }
+                    return Ok(sn.serial_number);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return BadRequest(e.Message);
+                }
+
+            }
+        }
+        [Route("GetIDWithSN")]
+        [HttpGet]
+        public async Task<ActionResult> GetIDWithSN(string userid)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                try
+                {
+                    string serialNumber = await getOrSetSerialNumber(userid, db);
+                    string mappedId = await getOrSetMappedId(userid, db);
+
+
+                    var json = new { serial_number = serialNumber, mappedId = mappedId };
+
+                    var jsonResult = JsonConvert.SerializeObject(json);
+
+                    return Ok(jsonResult);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return BadRequest(e.Message);
+                }
+
+            }
+        }
+
+
         [Route("CreateUserById")]
         [HttpPost]
         public async Task<ActionResult> CreateUserById(string userid)
@@ -117,15 +177,46 @@ namespace WebAppForGame.api
                     await db.SaveChangesAsync();
                     return Ok(mappedId);
                 }
-                catch  (Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                     return BadRequest(e.Message);
                 }
             }
         }
+        private async Task<string> getOrSetSerialNumber(string userId, ApplicationDbContext db)
+        {
+            var sn = await db.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userId);
+            if (sn == null)
+            {
 
-        private string getUniqueId(int maxLength)
+                sn = new SerialNumbers
+                {
+                    user_id = userId,
+                    serial_number = getUniqueId(4, true)
+                };
+                await db.SerialNumbers.AddAsync(sn);
+                await db.SaveChangesAsync();
+            }
+            return sn.serial_number;
+        }
+        private async Task<string> getOrSetMappedId(string userId, ApplicationDbContext db)
+        {
+            var sn = await db.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
+            if (sn == null)
+            {
+
+                sn = new userid_mapping
+                {
+                    user_id = userId,
+                    mapped_id = getUniqueId(4)
+                };
+                await db.userid_mapping.AddAsync(sn);
+                await db.SaveChangesAsync();
+            }
+            return sn.mapped_id;
+        }
+        private string getUniqueId(int maxLength, bool isSerial = false)
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
@@ -144,8 +235,17 @@ namespace WebAppForGame.api
                     }
                     result = output.ToString();
 
-                    if (db.userid_mapping.Any(x => x.mapped_id == output.ToString()))
-                        result = getUniqueId(maxLength);
+                    if (isSerial)
+                    {
+                        if (db.SerialNumbers.Any(x => x.serial_number == output.ToString()))
+                            result = getUniqueId(maxLength, true);
+                    }
+                    else
+                    {
+                        if (db.userid_mapping.Any(x => x.mapped_id == output.ToString()))
+                            result = getUniqueId(maxLength);
+                    }
+
 
                     return result;
                 }

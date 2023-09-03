@@ -10,6 +10,7 @@ namespace EFCoreDockerMySQL
         public DbSet<log_gameover> log_gameover { get; set; }
         public DbSet<userid_mapping> userid_mapping { get; set; }
         public DbSet<userlog_in> userlog_in { get; set; }
+        public DbSet<SerialNumbers> SerialNumbers { get; set; }
 
         public ApplicationDbContext()
         {
