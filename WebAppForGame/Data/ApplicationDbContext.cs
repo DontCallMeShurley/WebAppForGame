@@ -16,6 +16,10 @@ namespace EFCoreDockerMySQL
         {
             Database.EnsureCreated();
         }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql(

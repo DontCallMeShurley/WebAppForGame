@@ -77,7 +77,7 @@ namespace WebAppForGame.api
                     var count = await db.userid_mapping.CountAsync(x => x.user_id == userid);
                     if (count == 0)
                     {
-                        var mappedId = getUniqueId(4);
+                        var mappedId = getUniqueId(7);
 
                         db.userid_mapping.Add(new userid_mapping
                         {
@@ -107,7 +107,7 @@ namespace WebAppForGame.api
                     var sn = await db.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
                     if (sn == null)
                     {
-                        var mappedId = getUniqueId(4, true);
+                        var mappedId = getUniqueId(10, true);
 
                         sn = new SerialNumbers
                         {
@@ -167,7 +167,7 @@ namespace WebAppForGame.api
                     if (count > 0)
                         return BadRequest("Ошибка. Для пользователя уже заведён смапенный аккаунт");
 
-                    var mappedId = getUniqueId(4);
+                    var mappedId = getUniqueId(7);
 
                     db.userid_mapping.Add(new userid_mapping
                     {
@@ -193,7 +193,7 @@ namespace WebAppForGame.api
                 sn = new SerialNumbers
                 {
                     user_id = userId,
-                    serial_number = getUniqueId(4, true)
+                    serial_number = getUniqueId(10, true)
                 };
                 await db.SerialNumbers.AddAsync(sn);
                 await db.SaveChangesAsync();
@@ -209,7 +209,7 @@ namespace WebAppForGame.api
                 sn = new userid_mapping
                 {
                     user_id = userId,
-                    mapped_id = getUniqueId(4)
+                    mapped_id = getUniqueId(7)
                 };
                 await db.userid_mapping.AddAsync(sn);
                 await db.SaveChangesAsync();
@@ -222,7 +222,7 @@ namespace WebAppForGame.api
             {
                 try
                 {
-                    string characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     StringBuilder output = new StringBuilder();
                     Random rnd = new Random();
                     string result = "";
