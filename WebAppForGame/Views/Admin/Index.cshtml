@@ -42,19 +42,19 @@
         <!-- Insights -->
         <ul class="insights">
             <li>
-                <i class='bx bx-calendar-check'></i>
+                <i class='bx bx-chalkboard'></i>
                 <span class="info">
                     <h3>
-                        @Model.TotalUsers
+                        @Model.MaxPoints
                     </h3>
-                    <p>Всего пользователей</p>
+                    <p>Рекорд очков</p>
                 </span>
             </li>
             <li>
                 <i class='bx bx-show-alt'></i>
                 <span class="info">
                     <h3>
-                        @Model.TotalLogin
+                        @Model.TotalLoginPerDay
                     </h3>
                     <p>Входов за день</p>
                 </span>
@@ -63,9 +63,9 @@
                 <i class='bx bx-line-chart'></i>
                 <span class="info">
                     <h3>
-                        @Model.log_Gameovers.Count()
+                        @Model.TotalLoginPerDay
                     </h3>
-                    <p>Всего прохождений</p>
+                    <p>Прохождений за день</p>
                 </span>
             </li>
             <li>

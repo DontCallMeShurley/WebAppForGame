@@ -10,7 +10,11 @@ namespace WebAppForGame.ViewModels
 
         public double TotalPaid { get; set; }
 
-        public int TotalLogin { get; set; }
+        public int TotalLoginPerDay { get; set; }
+        public long MaxPoints { get; set; }
+        public int TotalGameOversPerDay { get; set; }
+
+
 
     }
 }

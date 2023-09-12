@@ -5,13 +5,14 @@ using WebAppForGame.ViewModels;
 
 namespace WebAppForGame.Controllers
 {
+
     public class AdminController : Controller
     {
         private MainRepository _repository = new MainRepository();
         // GET: AdminController
         public ActionResult Index()
         {
-            var model = _repository.getViewModel();
+            var model =  _repository.getViewModel();
             return View(model);
         }
 
