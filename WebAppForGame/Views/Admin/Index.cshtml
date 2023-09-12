@@ -1,0 +1,171 @@
+﻿@using WebAppForGame.ViewModels
+@model DashboardViewModel
+@{
+    Layout = "_Layout";
+}
+<div class="content">
+    <!-- Navbar -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Поиск...">
+                <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="theme-toggle" hidden>
+        <label for="theme-toggle" class="theme-toggle"></label>
+
+        <a href="#" class="profile">
+            <img src="~/img/logo.jpg">
+        </a>
+    </nav>
+
+    <!-- End of Navbar -->
+
+    <main>
+        <div class="header">
+            <div class="left">
+                <h1>Панель мониторинга</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="/Admin">
+                            Admin
+                        </a>
+                    </li>
+                    /
+                    <li><a href="/Index" class="active">Main</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <ul class="insights">
+            <li>
+                <i class='bx bx-calendar-check'></i>
+                <span class="info">
+                    <h3>
+                        @Model.TotalUsers
+                    </h3>
+                    <p>Всего пользователей</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bx-show-alt'></i>
+                <span class="info">
+                    <h3>
+                        @Model.TotalLogin
+                    </h3>
+                    <p>Входов за день</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bx-line-chart'></i>
+                <span class="info">
+                    <h3>
+                        @Model.log_Gameovers.Count()
+                    </h3>
+                    <p>Всего прохождений</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bx-dollar-circle'></i>
+                <span class="info">
+                    <h3>
+                        ₽@Model.TotalPaid
+                    </h3>
+                    <p>Всего продаж</p>
+                </span>
+            </li>
+        </ul>
+        <!-- End of Insights -->
+
+        <div class="bottom-data">
+            <div class="orders">
+                <div class="header">
+                    <i class='bx bx-receipt'></i>
+                    <h3>Заказы</h3>
+                    <i class='bx bx-filter'></i>
+                    <i class='bx bx-search'></i>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>UserId</th>
+                            <th>Дата заказа</th>
+                            <th>Сумма</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p>JaS122</p>
+                            </td>
+                            <td>14-09-2023</td>
+                            <td>180₽</td>
+                            <td><span class="status completed">Успешно</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>GTYS122</p>
+                            </td>
+                            <td>11-09-2023</td>
+                            <td>100₽</td>
+                            <td><span class="status pending">Ожидание</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>168AEQ</p>
+                            </td>
+                            <td>12-08-2023</td>
+                            <td>500₽</td>
+                            <td><span class="status danger">Отмена</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="reminders">
+                <div class="orders">
+                <div class="header">
+                    <i class='bx bx-note'></i>
+                    <h3>Последние прохождения</h3>
+                    <i class='bx bx-filter'></i>
+                    <i class='bx bx-plus'></i>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Id</th>
+                            <th>Дата и время</th>
+                            <th>Счёт</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var log in Model.log_Gameovers.Take(3).ToList())
+                            {
+                                <tr>
+                                    <td>
+                                        <p>@log.user_id</p>
+                                    </td>
+                                    <td>@log.GetDateTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td><span class="status info">@log.score</span></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            </div>
+
+            <!-- End of Reminders-->
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="~/js/index.js"></script>

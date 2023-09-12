@@ -154,7 +154,12 @@ namespace WebAppForGame.api
             }
         }
 
-
+        [Route("test")]
+        [HttpPost]
+        public async Task<ActionResult> test(bool test)
+        {
+            return Ok();
+        }
         [Route("CreateUserById")]
         [HttpPost]
         public async Task<ActionResult> CreateUserById(string userid)
