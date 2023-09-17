@@ -3,6 +3,8 @@
     Layout = "_Layout";
 }
 
+<H2>Products</H2>
+
 @(Html.DevExtreme().DataGrid<WebAppForGame.Data.Products>()
     .DataSource(ds => ds.Mvc()
         .Controller("Products")

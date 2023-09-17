@@ -1,4 +1,5 @@
-
+using System.Collections;
+using System.Globalization;
 using DevExpress.Xpo;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -6,11 +7,9 @@ using EFCoreDockerMySQL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using System.Collections;
-using System.Globalization;
 using WebAppForGame.Data;
 
-namespace WebAppForGame.Controllers
+namespace WebAppForGame.api
 {
     [Route("api/[controller]/[action]")]
     public class PaymentsController : Controller

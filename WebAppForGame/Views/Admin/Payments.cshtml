@@ -1,6 +1,10 @@
-﻿@{
+﻿@page
+
+@{
     Layout = "_Layout";
 }
+
+<H2>Payments</H2>
 
 @(Html.DevExtreme().DataGrid<WebAppForGame.Data.Payments>()
     .DataSource(ds => ds.Mvc()
