@@ -23,4 +23,19 @@ public class ProductsRepository
     {
         return await _context.Products.FirstAsync(x => x.Id == id);
     }
+
+    public Products Update(Products product)
+    {
+        return _context.Products.Update(product).Entity;
+    }
+
+    public Products Add(Products product)
+    {
+        return _context.Products.Add(product).Entity;
+    }
+
+    public Products Remove(Products product)
+    {
+        return _context.Products.Remove(product).Entity;
+    }
 }

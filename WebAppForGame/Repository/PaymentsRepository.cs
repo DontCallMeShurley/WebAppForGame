@@ -1,5 +1,6 @@
-﻿using EFCoreDockerMySQL;
-using WebAppForGame.ViewModels;
+﻿using DevExpress.Xpo;
+using EFCoreDockerMySQL;
+using WebAppForGame.Data;
 
 namespace WebAppForGame.Repository;
 
@@ -12,15 +13,13 @@ public class PaymentsRepository
         _context = context;
     }
 
-    public List<PaymentsViewModel> Get()
+    public List<Payments> Get()
     {
-        // TODO:
-        return new List<PaymentsViewModel>();
+        return _context.Payments.ToList();
     }
 
-    public PaymentsViewModel GetById(long id)
+    public async Task<Payments> GetById(Guid id)
     {
-        // TODO:
-        return null;
+        return await _context.Payments.FirstAsync(x => x.Id == id);
     }
 }
