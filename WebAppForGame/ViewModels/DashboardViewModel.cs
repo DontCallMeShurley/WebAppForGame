@@ -13,8 +13,5 @@ namespace WebAppForGame.ViewModels
         public int TotalLoginPerDay { get; set; }
         public long MaxPoints { get; set; }
         public int TotalGameOversPerDay { get; set; }
-
-
-
     }
 }

@@ -6,30 +6,52 @@ using WebAppForGame.ViewModels;
 
 namespace WebAppForGame.Controllers
 {
-
     public class AdminController : Controller
     {
         private readonly MainRepository _repository;
-        public AdminController(MainRepository repository)
+        private readonly ProductsRepository _productsRepository;
+        private readonly PaymentsRepository _paymentsRepository;
+        
+
+        public AdminController(MainRepository repository, ProductsRepository productsRepository, PaymentsRepository paymentsRepository)
         {
             _repository = repository;
+            _productsRepository = productsRepository;
+            _paymentsRepository = paymentsRepository;
         }
+
         // GET: AdminController
         public ActionResult Index()
         {
-            var model =  _repository.GetViewModel();
+            var model = _repository.GetViewModel();
             return View(model);
         }
 
-        // GET: AdminController/Details/5
-        public ActionResult Details(int id)
+        // GET: AdminController/Payments
+        public ActionResult Payments()
         {
-            return View();
+            var model = _paymentsRepository.Get();
+            return View(model);
         }
 
-        // GET: AdminController/Create
-        public ActionResult Create()
+        // GET: AdminController/Products
+        public ActionResult Products()
         {
+            var model = _productsRepository.Get().Select(item => new ProductsViewModel()
+            {
+                Amount = item.Amount,
+                Coins = item.Coins,
+                Id = item.Id,
+                Name = item.Name
+            }).ToList();
+            
+            return View(model);
+        }
+
+        // GET: AdminController/Settings
+        public ActionResult Settings()
+        {
+            // var model = _repository.GetSettingsViewModel();
             return View();
         }
 

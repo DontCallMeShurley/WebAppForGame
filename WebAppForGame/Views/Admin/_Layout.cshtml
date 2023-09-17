@@ -20,6 +20,9 @@
         </a>
         <ul class="side-menu">
             <li><a href="/Admin"><i class='bx bxs-dashboard'></i>Панель мониторинга</a></li>
+            <li><a href="/Admin/Products"><i class='bx bxs-dashboard'></i>Продукты</a></li>
+            <li><a href="/Admin/Payments"><i class='bx bxs-dashboard'></i>Покупки</a></li>
+            <li><a href="/Admin/Settings"><i class='bx bxs-dashboard'></i>Настройки</a></li>
             @* <li><a href="#"><i class='bx bx-store-alt'></i>Shop</a></li>
             <li class="active"><a href="#"><i class='bx bx-analyse'></i>Analytics</a></li>
             <li><a href="#"><i class='bx bx-message-square-dots'></i>Tickets</a></li>
@@ -35,7 +38,31 @@
             </li>
         </ul>
     </div>
-    @RenderBody()
+<div class="content">
+    <!-- Navbar -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Поиск...">
+                <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="theme-toggle" checked hidden>
+        <label for="theme-toggle" class="theme-toggle"></label>
+
+        <a href="#" class="profile">
+            <img src="~/img/logo.jpg">
+        </a>
+    </nav>
+
+    <!-- End of Navbar -->
+
+    <main>
+        @RenderBody()
+    </main>
+
+</div>
 </body>
 
 </html>

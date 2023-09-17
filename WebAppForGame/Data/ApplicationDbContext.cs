@@ -4,7 +4,6 @@ using WebAppForGame.Data;
 
 namespace EFCoreDockerMySQL
 {
-
     public class ApplicationDbContext : DbContext
     {
         public DbSet<log_gameover> log_gameover { get; set; }
@@ -19,9 +18,9 @@ namespace EFCoreDockerMySQL
         {
             Database.EnsureCreated();
         }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
         }
     }
 }

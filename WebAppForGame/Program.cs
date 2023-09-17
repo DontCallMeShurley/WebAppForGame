@@ -14,6 +14,8 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddScoped<MainRepository>();
+builder.Services.AddScoped<PaymentsRepository>();
+builder.Services.AddScoped<ProductsRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

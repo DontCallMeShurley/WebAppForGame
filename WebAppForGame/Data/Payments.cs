@@ -14,7 +14,6 @@ namespace WebAppForGame.Data
         public string? PaymentId { get; set; }
         public string? PaymentStatus { get; set; }
         public DateTime Date { get; set; }
-
     }
 
 }
