@@ -25,6 +25,14 @@ namespace WebAppForGame.Controllers
             return View(model);
         }
 
+        public ActionResult Products()
+        {
+            return View();
+        }
+        public ActionResult Payments()
+        {
+            return View();
+        }
         // GET: AdminController/Settings
         public ActionResult Settings()
         {
