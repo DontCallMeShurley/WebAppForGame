@@ -17,13 +17,22 @@
 
         columns.AddFor(m => m.Id);
 
-        columns.AddFor(m => m.UserID);
+        columns.Add()
+            .DataField("UserID")
+            .Caption("Id Пользователя");
 
-        columns.AddFor(m => m.PaymentId);
+        columns.Add()
+            .DataField("PaymentId")
+            .Caption("Id Платежа");
 
-        columns.AddFor(m => m.PaymentStatus);
+        columns.Add()
+            .DataField("PaymentStatus")
+            .Caption("Статус платежа");
 
-        columns.AddFor(m => m.Date);
+        columns.Add()
+            .DataField("Date")
+            .Caption("Дата")
+            .DataType(GridColumnDataType.Date);
     })
 )
 

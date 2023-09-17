@@ -5,9 +5,15 @@
 @{
     Layout = "_Layout";
 }
+@(Html.DevExtreme().Form<WebAppForGame.Data.Settings>()
+    .Items(items => {
+        items.AddGroup().Caption("Group1").Items(groupItems => {
 
-<div>
-    Settings
-</div>
+            groupItems.AddSimpleFor(m => m.BearerToken);
+
+            groupItems.AddSimpleFor(m => m.MerchantId);
+        });
+    })
+)
 
 <script src="~/js/index.js"></script>

@@ -5,7 +5,9 @@
 
 <H2>Products</H2>
 
+
 @(Html.DevExtreme().DataGrid<WebAppForGame.Data.Products>()
+    .ID("gridContainer")
     .DataSource(ds => ds.Mvc()
         .Controller("Products")
         .LoadAction("Get")
@@ -14,16 +16,31 @@
         .DeleteAction("Delete")
         .Key("Id")
     )
+    .Paging(p => p.PageSize(10))
+    .Pager(p => p
+        .ShowPageSizeSelector(true)
+        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
+    )
     .RemoteOperations(true)
     .Columns(columns => {
 
         columns.AddFor(m => m.Id);
 
-        columns.AddFor(m => m.Amount);
+        columns.Add()
+            .DataField("Amount")
+            .DataType(GridColumnDataType.Number)
+            // .Format(Format.Currency)
+            .Caption("Сумма");
 
-        columns.AddFor(m => m.Name);
+        columns.Add()
+            .DataField("Name")
+            .Caption("Название");
 
-        columns.AddFor(m => m.Coins);
+        columns.Add()
+            .DataField("Coins")
+            .DataType(GridColumnDataType.Number)
+            //.Format(Format.Currency)
+            .Caption("Монеты");
     })
     .Editing(e => e
         .AllowAdding(true)
