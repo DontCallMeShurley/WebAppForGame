@@ -3,6 +3,7 @@ using System;
 using EFCoreDockerMySQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAppForGame.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230916202849_Add setting class")]
+    partial class Addsettingclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,19 +28,17 @@ namespace WebAppForGame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("PaymentId")
                         .HasColumnType("longtext");
 
                     b.Property<string>("PaymentStatus")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserID")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -60,6 +61,7 @@ namespace WebAppForGame.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -93,9 +95,6 @@ namespace WebAppForGame.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BearerToken")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("MerchantId")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -165,7 +164,9 @@ namespace WebAppForGame.Migrations
                 {
                     b.HasOne("WebAppForGame.Data.Products", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

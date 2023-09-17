@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebAppForGame.Repository;
 using WebAppForGame.ViewModels;
@@ -8,11 +9,15 @@ namespace WebAppForGame.Controllers
 
     public class AdminController : Controller
     {
-        private MainRepository _repository = new MainRepository();
+        private readonly MainRepository _repository;
+        public AdminController(MainRepository repository)
+        {
+            _repository = repository;
+        }
         // GET: AdminController
         public ActionResult Index()
         {
-            var model =  _repository.getViewModel();
+            var model =  _repository.GetViewModel();
             return View(model);
         }
 

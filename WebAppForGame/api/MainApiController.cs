@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Web.Administration;
 using Newtonsoft.Json;
 using System.Text;
 using WebAppForGame.Data;
 using WebAppForGame.Dtos;
+using WebAppForGame.Repository;
 
 namespace WebAppForGame.api
 {
@@ -14,28 +16,31 @@ namespace WebAppForGame.api
     [ApiController]
     public class MainApiController : ControllerBase
     {
-
+        private readonly MainRepository _repository;
+        private readonly ApplicationDbContext _context;
+        public MainApiController(MainRepository repository, ApplicationDbContext context)
+        {
+            _repository = repository;
+            _context = context;
+        }
         [Route("log_login")]
         [HttpPost]
         public async Task<ActionResult> log_login(string userid)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
+                var userlogin = new userlog_in()
                 {
-                    var userlogin = new userlog_in()
-                    {
-                        time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
-                        user_id = userid
-                    };
-                    db.userlog_in.Add(userlogin);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
+                    time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
+                    user_id = userid
+                };
+                _context.userlog_in.Add(userlogin);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
             }
             return Ok("Successfull");
         }
@@ -44,154 +49,147 @@ namespace WebAppForGame.api
         [HttpPost]
         public async Task<ActionResult> log_gameover(log_gameover_dto log_Gameover)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
+                var gameover_log = new log_gameover()
                 {
-                    var gameover_log = new log_gameover()
-                    {
-                        time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
-                        user_id = log_Gameover.user_id,
-                        score = log_Gameover.score
-                    };
-                    db.log_gameover.Add(gameover_log);
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
+                    time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
+                    user_id = log_Gameover.user_id,
+                    score = log_Gameover.score
+                };
+                _context.log_gameover.Add(gameover_log);
+                await _context.SaveChangesAsync();
             }
-            return Ok("Successfull");
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+            return Ok("Successful");
         }
 
         [Route("GetMappedUserId")]
         [HttpGet]
         public async Task<ActionResult> GetMappedUserId(string userid)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
+                var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
+                if (count == 0)
                 {
-                    var count = await db.userid_mapping.CountAsync(x => x.user_id == userid);
-                    if (count == 0)
-                    {
-                        var mappedId = getUniqueId(7);
+                    var mappedId = getUniqueId(7);
 
-                        db.userid_mapping.Add(new userid_mapping
-                        {
-                            user_id = userid,
-                            mapped_id = mappedId
-                        });
-                        db.SaveChanges();
-                    }
+                    _context.userid_mapping.Add(new userid_mapping
+                    {
+                        user_id = userid,
+                        mapped_id = mappedId
+                    });
+                    _context.SaveChanges();
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
-                return Ok(db.userid_mapping.FirstOrDefault(x => x.user_id == userid)?.mapped_id);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
+            return Ok(_context.userid_mapping.FirstOrDefault(x => x.user_id == userid)?.mapped_id);
         }
 
         [Route("GetSerialNumber")]
         [HttpGet]
         public async Task<ActionResult> GetSerialNumber(string userid)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
+                var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
+                if (sn == null)
                 {
-                    var sn = await db.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
-                    if (sn == null)
+                    var mappedId = getUniqueId(10, true);
+
+                    sn = new SerialNumbers
                     {
-                        var mappedId = getUniqueId(10, true);
-
-                        sn = new SerialNumbers
-                        {
-                            user_id = userid,
-                            serial_number = mappedId
-                        };
-                        db.SerialNumbers.Add(sn);
-                        db.SaveChanges();
-                    }
-                    return Ok(sn.serial_number);
+                        user_id = userid,
+                        serial_number = mappedId
+                    };
+                    _context.SerialNumbers.Add(sn);
+                    _context.SaveChanges();
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
-
+                return Ok(sn.serial_number);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
             }
         }
         [Route("GetIDWithSN")]
         [HttpGet]
         public async Task<ActionResult> GetIDWithSN(string userid)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
-                {
-                    string serialNumber = await getOrSetSerialNumber(userid, db);
-                    string mappedId = await getOrSetMappedId(userid, db);
+                string serialNumber = await getOrSetSerialNumber(userid);
+                string mappedId = await getOrSetMappedId(userid);
 
 
-                    var json = new { serial_number = serialNumber, mappedId = mappedId };
+                var json = new { serial_number = serialNumber, mappedId = mappedId };
 
-                    var jsonResult = JsonConvert.SerializeObject(json);
+                var jsonResult = JsonConvert.SerializeObject(json);
 
-                    return Ok(jsonResult);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
-
+                return Ok(jsonResult);
             }
-        }
-
-        [Route("test")]
-        [HttpPost]
-        public async Task<ActionResult> test(bool test)
-        {
-            return Ok();
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
+            }
         }
         [Route("CreateUserById")]
         [HttpPost]
         public async Task<ActionResult> CreateUserById(string userid)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            try
             {
-                try
-                {
-                    var count = await db.userid_mapping.CountAsync(x => x.user_id == userid);
-                    if (count > 0)
-                        return BadRequest("Ошибка. Для пользователя уже заведён смапенный аккаунт");
+                var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
+                if (count > 0)
+                    return BadRequest("Ошибка. Для пользователя уже заведён смапенный аккаунт");
 
-                    var mappedId = getUniqueId(7);
+                var mappedId = getUniqueId(7);
 
-                    db.userid_mapping.Add(new userid_mapping
-                    {
-                        user_id = userid,
-                        mapped_id = mappedId
-                    });
-                    await db.SaveChangesAsync();
-                    return Ok(mappedId);
-                }
-                catch (Exception e)
+                _context.userid_mapping.Add(new userid_mapping
                 {
-                    Console.WriteLine(e.Message);
-                    return BadRequest(e.Message);
-                }
+                    user_id = userid,
+                    mapped_id = mappedId
+                });
+                await _context.SaveChangesAsync();
+                return Ok(mappedId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest(e.Message);
             }
         }
-        private async Task<string> getOrSetSerialNumber(string userId, ApplicationDbContext db)
+        [Route("CreatePayment")]
+        [HttpGet]
+        public async Task<ActionResult> CreatePayment(string userID, int productID)
         {
-            var sn = await db.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userId);
+            try
+            {
+                var result = await _repository.GetPayLink(userID, productID);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+
+        }
+
+        private async Task<string> getOrSetSerialNumber(string userId)
+        {
+            var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userId);
             if (sn == null)
             {
 
@@ -200,14 +198,14 @@ namespace WebAppForGame.api
                     user_id = userId,
                     serial_number = getUniqueId(10, true)
                 };
-                await db.SerialNumbers.AddAsync(sn);
-                await db.SaveChangesAsync();
+                await _context.SerialNumbers.AddAsync(sn);
+                await _context.SaveChangesAsync();
             }
             return sn.serial_number;
         }
-        private async Task<string> getOrSetMappedId(string userId, ApplicationDbContext db)
+        private async Task<string> getOrSetMappedId(string userId)
         {
-            var sn = await db.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
+            var sn = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
             if (sn == null)
             {
 
@@ -216,8 +214,8 @@ namespace WebAppForGame.api
                     user_id = userId,
                     mapped_id = getUniqueId(7)
                 };
-                await db.userid_mapping.AddAsync(sn);
-                await db.SaveChangesAsync();
+                await _context.userid_mapping.AddAsync(sn);
+                await _context.SaveChangesAsync();
             }
             return sn.mapped_id;
         }

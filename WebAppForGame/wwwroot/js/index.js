@@ -1,5 +1,5 @@
 const sideLinks = document.querySelectorAll('.sidebar .side-menu li a:not(.logout)');
-
+document.body.classList.add('dark');
 sideLinks.forEach(item => {
     const li = item.parentElement;
     item.addEventListener('click', () => {

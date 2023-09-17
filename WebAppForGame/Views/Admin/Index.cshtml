@@ -13,7 +13,7 @@
                 <button class="search-btn" type="submit"><i class='bx bx-search'></i></button>
             </div>
         </form>
-        <input type="checkbox" id="theme-toggle" hidden>
+        <input type="checkbox" id="theme-toggle" checked hidden>
         <label for="theme-toggle" class="theme-toggle"></label>
 
         <a href="#" class="profile">
@@ -128,36 +128,34 @@
 
             <div class="reminders">
                 <div class="orders">
-                <div class="header">
-                    <i class='bx bx-note'></i>
-                    <h3>Последние прохождения</h3>
-                    <i class='bx bx-filter'></i>
-                    <i class='bx bx-plus'></i>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User Id</th>
-                            <th>Дата и время</th>
-                            <th>Счёт</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (var log in Model.log_Gameovers.Take(3).ToList())
-                            {
-                                <tr>
-                                    <td>
-                                        <p>@log.user_id</p>
-                                    </td>
-                                    <td>@log.GetDateTime().ToString("dd.MM.yyyy HH:mm")</td>
-                                    <td><span class="status info">@log.score</span></td>
-                                </tr>
+                    <div class="header">
+                        <i class='bx bx-revision'></i>
+                        <h3>Последние прохождения</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Id</th>
+                                <th>Дата и время</th>
+                                <th>Счёт</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var log in Model.log_Gameovers.Take(3).ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            <p>@log.user_id</p>
+                                        </td>
+                                        <td>@log.GetDateTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td><span class="status info">@log.score</span></td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- End of Reminders-->

@@ -1,6 +1,8 @@
 using EFCoreDockerMySQL;
 using Microsoft.EntityFrameworkCore;
 using WebAppForGame.api;
+using WebAppForGame.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddScoped<MainRepository>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
