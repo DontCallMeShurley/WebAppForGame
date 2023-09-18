@@ -110,6 +110,10 @@ namespace WebAppForGame.Repository
         {
             return await _context.Products.FirstAsync(x => x.Id == id);
         }
+        public async Task<List<Products>> GetProducts()
+        {
+            return await _context.Products.ToListAsync();
+        }
         private async void Save()
         {
             await _context.SaveChangesAsync();

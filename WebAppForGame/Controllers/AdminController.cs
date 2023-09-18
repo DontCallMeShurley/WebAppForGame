@@ -21,6 +21,12 @@ namespace WebAppForGame.Controllers
             return View(model);
         }
 
+        public async Task<ActionResult> Products()
+        {
+            var model = await _repository.GetProducts();
+            return View(model);
+        }
+
         // GET: AdminController/Details/5
         public ActionResult Details(int id)
         {
