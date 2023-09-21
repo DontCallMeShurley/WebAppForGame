@@ -1,0 +1,84 @@
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
+
+@{
+    Layout = "_Layout";
+    ViewBag.currentLayer = 2;
+}
+<main>
+    <div class="header">
+        <div class="left">
+            <h1>Заказы</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/Admin">
+                        Admin
+                    </a>
+                </li>
+                /
+                <li><a href="/Products" class="active">Products</a></li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div id="data">
+        @(
+                Html.DevExtreme().DataGrid<Payments>()
+                .ID("gridContainer")
+                .ShowBorders(false)
+                .FilterRow(filterRow => filterRow
+                .Visible(true)
+                .ApplyFilter(GridApplyFilterMode.Auto)
+                )
+                .SearchPanel(searchPanel => searchPanel
+                .Visible(true)
+                .Width(240)
+                .Placeholder("Поиск...")
+                )
+                .ColumnAutoWidth(true)
+                .ColumnHidingEnabled(true)
+                .Paging(paging => paging.PageSize(15))
+                .RemoteOperations(true)
+                .Columns(columns =>
+                {
+                    columns.AddFor(m => m.UserID);
+
+                    columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+
+                    columns.AddFor(m => m.Product.Name).Caption("Товар");
+
+                    columns.AddFor(m => m.Product.Amount).Format(f => f
+                .Type(Format.Currency)
+                .Currency("RUB")
+                ).Caption("Сумма");
+
+                    columns.AddFor(m => m.PaymentStatus);
+
+                })
+                .Summary(s => s.TotalItems(items =>
+                {
+                    items.AddFor(m => m.UserID)
+                .SummaryType(SummaryType.Count);
+
+                    items.AddFor(m => m.Date)
+                .SummaryType(SummaryType.Max)
+                .CustomizeText(@<text>
+                    function(data) { return "Последний: " + formatDate(data.value); }
+                </text>);
+
+                    items.AddFor(m => m.Product.Amount)
+            .SummaryType(SummaryType.Sum)
+            .ValueFormat(f => f.Type(Format.Currency).Currency("RUB"));
+                })
+            )
+            .DataSource(ds => ds.Mvc()
+            .Controller("Payments")
+            .LoadAction("Get")
+            .Key("Id")
+            )
+            )
+    </div>
+</main>
+<script>
+    var formatDate = new Intl.DateTimeFormat("ru-RU", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }).format;
+</script>

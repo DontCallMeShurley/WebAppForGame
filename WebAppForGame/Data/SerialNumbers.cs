@@ -7,7 +7,11 @@ namespace WebAppForGame.Data
     {
         [Key]
         public Guid id { get; set; }
-        public string user_id { get; set; }
-        public string serial_number { get; set; }
+
+        [Display(Name ="ID пользователя")]
+        public string? user_id { get; set; }
+
+        [Display(Name = "Серийный номер")]
+        public string? serial_number { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 @model DashboardViewModel
 @{
     Layout = "_Layout";
+    ViewBag.currentLayer = 0;
 }
 
     <main>
@@ -14,8 +15,6 @@
                             Admin
                         </a>
                     </li>
-                    /
-                    <li><a href="/Index" class="active">Main</a></li>
                 </ul>
             </div>
         </div>
@@ -44,7 +43,7 @@
                 <i class='bx bx-line-chart'></i>
                 <span class="info">
                     <h3>
-                        @Model.TotalLoginPerDay
+                        @Model.TotalGameOversPerDay
                     </h3>
                     <p>Прохождений за день</p>
                 </span>
@@ -79,30 +78,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <p>JaS122</p>
-                            </td>
-                            <td>14-09-2023</td>
-                            <td>180₽</td>
-                            <td><span class="status completed">Успешно</span></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>GTYS122</p>
-                            </td>
-                            <td>11-09-2023</td>
-                            <td>100₽</td>
-                            <td><span class="status pending">Ожидание</span></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>168AEQ</p>
-                            </td>
-                            <td>12-08-2023</td>
-                            <td>500₽</td>
-                            <td><span class="status danger">Отмена</span></td>
-                        </tr>
+                    @{
+                        foreach (var payment in Model.Payments)
+                        {
+                            <tr>
+                                <td>
+                                    <p>@payment.UserID</p>
+                                </td>
+                                <td>@payment.Date.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@(payment.Product.Amount.ToString() + "₽")</td>
+                                @{
+                                    switch (payment.PaymentStatus)
+                                    {
+                                        case "pending":
+                                            <td><span class="status pending">Ожидание</span></td>
+                                            break;  
+                                        case "successfull":
+                                            <td><span class="status completed">Успешно</span></td>
+                                            break;
+                                        default:
+                                            <td><span class="status danger">Отмена</span></td>
+                                            break;
+                                    }
+                                }
+                               
+                            </tr>
+                        }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -116,7 +118,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>User Id</th>
+                                <th>UserId</th>
                                 <th>Дата и время</th>
                                 <th>Счёт</th>
                             </tr>
@@ -129,7 +131,7 @@
                                         <td>
                                             <p>@log.user_id</p>
                                         </td>
-                                        <td>@log.GetDateTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@log.Date.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td><span class="status info">@log.score</span></td>
                                     </tr>
                                 }

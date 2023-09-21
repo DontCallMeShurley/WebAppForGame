@@ -8,15 +8,14 @@ namespace WebAppForGame.Data
     {
         [Key]
         public Guid id { get; set; }
-        public long time { get; set; }
-        public string user_id { get; set; }
-        public long score { get; set; }
 
-        public DateTime GetDateTime()
-        {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(time).ToLocalTime();
-            return dateTime;
-        }
+        [Display(Name ="Дата игры")]
+        public DateTime Date { get; set; }
+
+        [Display(Name = "Пользователь")]
+        public string? user_id { get; set; }
+
+        [Display(Name = "Счёт")]
+        public long score { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using DevExpress.Data.Linq.Helpers;
-using EFCoreDockerMySQL;
+﻿using EFCoreDockerMySQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Web.Administration;
 using Newtonsoft.Json;
@@ -9,6 +8,7 @@ using System.Text.Json;
 using WebAppForGame.Data;
 using WebAppForGame.ViewModels;
 using System.Configuration;
+using System.Net.Http;
 
 namespace WebAppForGame.Repository
 {
@@ -24,10 +24,8 @@ namespace WebAppForGame.Repository
         {
             DashboardViewModel dashboard = new DashboardViewModel();
 
-            var currentStartDay = getStartDayTimestamp();
-
-
-            var gameovers = _context.log_gameover.AsNoTracking().OrderByDescending(x => x.time).ToList();
+            var gameovers = _context.log_gameover.AsNoTracking().OrderByDescending(x => x.Date).ToList();
+            var lastPayments = _context.Payments.AsNoTracking().Include(x => x.Product).OrderByDescending(x => x.Date).Take(3).ToList();
             var userIdMapping = _context.userid_mapping.AsNoTracking().ToList();
 
             gameovers.ForEach(x => x.user_id = userIdMapping.FirstOrDefault(y => y.user_id == x.user_id)?.mapped_id ?? x.user_id);
@@ -36,11 +34,12 @@ namespace WebAppForGame.Repository
             dashboard = new DashboardViewModel()
             {
                 log_Gameovers = gameovers,
-                TotalLoginPerDay = _context.userlog_in.Count(x => x.time > currentStartDay),
+                TotalLoginPerDay = _context.userlog_in.Count(x => x.Date > DateTime.Today),
                 TotalPaid = 180,
                 TotalUsers = userIdMapping.Count(),
                 MaxPoints = gameovers.Max(x => x.score),
-                TotalGameOversPerDay = gameovers.Count(x => x.time > currentStartDay)
+                TotalGameOversPerDay = gameovers.Count(x => x.Date > DateTime.Today),
+                Payments = lastPayments
             };
 
             return dashboard;
@@ -60,7 +59,9 @@ namespace WebAppForGame.Repository
                 var payment = new Payments()
                 {
                     Product = product,
-                    UserID = user.mapped_id
+                    UserID = user.mapped_id,
+                    PaymentStatus = "pending",
+                    Date = DateTime.Now
                 };
 
                 var settings = await _context.Settings.FirstAsync();
@@ -91,7 +92,8 @@ namespace WebAppForGame.Repository
 
                 _httpClient.DefaultRequestHeaders.Add("ContentType", "application/json");
 
-                HttpResponseMessage response = await _httpClient.PostAsync(System.Configuration.ConfigurationManager.AppSettings["PaymentUrl"], new StringContent(json, Encoding.UTF8, "application/json"));
+                var paymentUrl = @"https://paymaster.ru/api/v2/invoices";
+                HttpResponseMessage response = await _httpClient.PostAsync(paymentUrl, new StringContent(json, Encoding.UTF8, "application/json"));
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var responseObject = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(responseBody) ?? new Dictionary<string, string>();
@@ -99,7 +101,8 @@ namespace WebAppForGame.Repository
                 string paymentId = responseObject["paymentId"];
                 payment.PaymentId = paymentId;
                 _context.Payments.Add(payment);
-                Save();
+                _context.SaveChanges();
+                // Save();
 
                 string url = responseObject["url"];
 
@@ -117,13 +120,6 @@ namespace WebAppForGame.Repository
         private async void Save()
         {
             await _context.SaveChangesAsync();
-        }
-        private long getStartDayTimestamp()
-        {
-            DateTime now = DateTime.Now;
-            DateTime todayStartDate = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Local);
-            long timestamp = (long)(todayStartDate - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
-            return timestamp;
         }
     }
 }

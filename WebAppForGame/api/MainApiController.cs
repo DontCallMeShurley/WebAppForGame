@@ -31,7 +31,7 @@ namespace WebAppForGame.api
             {
                 var userlogin = new userlog_in()
                 {
-                    time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
+                    Date = DateTime.Now,
                     user_id = userid
                 };
                 _context.userlog_in.Add(userlogin);
@@ -53,7 +53,7 @@ namespace WebAppForGame.api
             {
                 var gameover_log = new log_gameover()
                 {
-                    time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
+                    Date = DateTime.Now,
                     user_id = log_Gameover.user_id,
                     score = log_Gameover.score
                 };

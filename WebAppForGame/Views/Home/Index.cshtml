@@ -1,4 +1,7 @@
-﻿@{
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
+@model List<Products>
+@{
     ViewData["Title"] = "Главная";
 }
 
@@ -6,24 +9,15 @@
 <div id="page-wrapper">
     <div class="container">
         <section id="pricing">
-            <div class="product" id="tenor">
-                <div class="level">5 попыток</div>
-                <h2>100 руб.</h2>
-                <p>Простые 5 попыток</p>
-                <button btn btn-pay btn-pay-1>Выбрать</button>
-            </div>
-            <div class="product" id="bass">
-                <div class="level">10 попыток</div>
-                <h2>180 руб.</h2>
-                <p>10 попыток по выгодной цене</p>
-                <button btn btn-pay btn-pay-2>Выбрать</button>
-            </div>
-            <div class="product" id="valve">
-                <div class="level">30 попыток</div>
-                <h2>500 руб.</h2>
-                <p>Самое выгодное предложение</p>
-                <button btn btn-pay btn-pay-3>Выбрать</button>
-            </div>
+            @foreach (var product in Model)
+            {
+                <div class="product" id="tenor">
+                    <div class="level">@product.Name</div>
+                    <h2>@product.Amount</h2>
+                    <p>@product.Description</p>
+                    <button btn btn-pay btn-pay-1>Выбрать</button>
+                </div>
+            }
         </section>
     </div>
 

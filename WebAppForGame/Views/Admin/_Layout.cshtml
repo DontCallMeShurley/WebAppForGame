@@ -1,17 +1,30 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+   
+  
+
+    <link href="~/css/devextreme/dx.darkviolet.css" rel="stylesheet" />
+    <script src="~/js/devextreme/jquery.js"></script>
+    <script src="~/js/devextreme/bootstrap.js"></script>
+
+    <script src="~/js/devextreme/dx.all.js"></script>
+    <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
+    <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
+    <script src="~/js/devextreme/localization/dx.messages.ru.js"></script>
+
+    <link href="~/css/devextreme/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css//style.css">
-    
     <title>SpeedBox - Панель администратора</title>
 
 </head>
-
+<script>
+    DevExpress.localization.locale("ru");
+</script>
 <body>
 
     <!-- Sidebar -->
@@ -21,12 +34,12 @@
             <div class="logo-name"><span>Speed</span>Box</div>
         </a>
         <ul class="side-menu">
-            <li><a href="/Admin"><i class='bx bxs-dashboard'></i>Панель мониторинга</a></li>
-            <li><a href="/Admin/Products"><i class='bx bx-store-alt'></i>Товары</a></li>
-            @*<li class="active"><a href="#"><i class='bx bx-analyse'></i>Analytics</a></li>
-            <li><a href="#"><i class='bx bx-message-square-dots'></i>Tickets</a></li>
-            <li><a href="#"><i class='bx bx-group'></i>Users</a></li>
-            <li><a href="#"><i class='bx bx-cog'></i>Settings</a></li>*@
+            <li class="@(ViewBag.currentLayer == 0 ? "active" : "")"><a href="/Admin"><i class='bx bxs-dashboard'></i>Панель мониторинга</a></li>
+            <li class="@(ViewBag.currentLayer == 1 ? "active" : "")"><a href="/Admin/Products"><i class='bx bx-store-alt'></i>Товары</a></li>
+            <li class="@(ViewBag.currentLayer == 2 ? "active" : "")"><a href="/Admin/Payments"><i class='bx bx-ruble'></i>Заказы</a></li>
+            <li class="@(ViewBag.currentLayer == 3 ? "active" : "")"><a href="/Admin/Logs"><i class='bx bx-message-square-dots'></i>Логи игроков</a></li>
+            <li class="@(ViewBag.currentLayer == 4 ? "active" : "")"><a href="/Admin/Users"><i class='bx bx-group'></i>Пользователи</a></li>
+            <li class="@(ViewBag.currentLayer == 5 ? "active" : "")"><a href="/Admin/Settings"><i class='bx bx-cog'></i>Настройки</a></li>
         </ul>
         <ul class="side-menu">
             <li>

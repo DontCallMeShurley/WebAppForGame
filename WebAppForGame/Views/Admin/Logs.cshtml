@@ -1,0 +1,154 @@
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
+
+@{
+    Layout = "_Layout";
+    ViewBag.currentLayer = 3;
+}
+<main>
+    <div class="header">
+        <div class="left">
+            <h1>Логи</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/Admin">
+                        Admin
+                    </a>
+                </li>
+                /
+                <li><a href="/Logs" class="active">Logs</a></li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    @(Html.DevExtreme().TabPanel()
+        .ID("tabPanel")
+        .DataSource(new[] {
+    new { text = "Логи входа" },
+    new { text = "Логи игр" }
+        })
+        .ItemTemplate(new JS("tabPanelTemplate"))
+        .ItemTitleTemplate(@<text><span class="dx-tab-text"><%- text %></span></text>)
+        .DeferRendering(false))
+
+    @(
+            Html.DevExtreme().DataGrid<log_gameover>()
+            .ID("gameover_grid")
+            .ShowBorders(false)
+            .FilterRow(filterRow => filterRow
+            .Visible(true)
+            .ApplyFilter(GridApplyFilterMode.Auto)
+            )
+            .SearchPanel(searchPanel => searchPanel
+            .Visible(true)
+            .Width(240)
+            .Placeholder("Поиск...")
+            )
+            .ColumnAutoWidth(true)
+            .ColumnHidingEnabled(true)
+            .Paging(paging => paging.PageSize(5))
+            .RemoteOperations(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.user_id);
+
+                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+
+                columns.AddFor(m => m.score);
+
+            })
+            .DataSource(ds => ds.Mvc()
+            .Controller("log_gameover")
+            .LoadAction("Get")
+            .Key("id")
+            )
+            .Summary(s => s.TotalItems(items =>
+            {
+                items.AddFor(m => m.user_id)
+            .SummaryType(SummaryType.Count);
+
+                items.AddFor(m => m.Date)
+            .SummaryType(SummaryType.Max)
+            .CustomizeText(@<text>
+                function(data) { return "Последний: " + formatDate(data.value); }
+            </text>);
+
+                items.AddFor(m => m.score)
+            .SummaryType(SummaryType.Max)
+            .CustomizeText(@<text>
+                function(data) { return "Рекорд: " + data.value; }
+            </text>);
+            })
+        )
+        )
+    @(
+            Html.DevExtreme().DataGrid<userlog_in>()
+            .ID("login_grid")
+            .ShowBorders(false)
+            .FilterRow(filterRow => filterRow
+            .Visible(true)
+            .ApplyFilter(GridApplyFilterMode.Auto)
+            )
+            .SearchPanel(searchPanel => searchPanel
+            .Visible(true)
+            .Width(240)
+            .Placeholder("Поиск...")
+            )
+            .ColumnAutoWidth(true)
+            .ColumnHidingEnabled(true)
+            .Paging(paging => paging.PageSize(5))
+            .RemoteOperations(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.user_id);
+
+                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+
+            })
+            .DataSource(ds => ds.Mvc()
+            .Controller("userlog_in")
+            .LoadAction("Get")
+            .Key("id")
+            )
+            .Summary(s => s.TotalItems(items =>
+            {
+                items.AddFor(m => m.user_id)
+            .SummaryType(SummaryType.Count);
+
+                items.AddFor(m => m.Date)
+            .SummaryType(SummaryType.Max)
+            .CustomizeText(@<text>
+                function(data) { return "Последний: " + formatDate(data.value); }
+            </text>);
+
+            })
+        )
+        )
+</main>
+<script>
+    var formatDate = new Intl.DateTimeFormat("ru-RU", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }).format;
+    var inCaption = "Логи входа";
+    var gameoverCaption = "Логи игр";
+
+    function tabPanelTemplate(itemData, itemIndex, itemElement) {
+        if (itemData.text === gameoverCaption) {
+            var $gridContainer = $("<div id='gameover_grid'>");
+
+            itemElement.append($gridContainer);
+        }
+        if (itemData.text === inCaption) {
+            var $gridContainer = $("<div id='login_grid'>");
+
+            itemElement.append($gridContainer);
+        }
+    }
+</script>
+<style>
+    .dx-datagrid {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+</style>

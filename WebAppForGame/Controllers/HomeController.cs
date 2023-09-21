@@ -2,38 +2,34 @@
 using System.Diagnostics;
 using System.Reflection;
 using WebAppForGame.Models;
+using WebAppForGame.Repository;
 
 namespace WebAppForGame.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MainRepository _repository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, MainRepository repository)
         {
             _logger = logger;
+            _repository = repository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            return View();
+            var model = await _repository.GetProducts();
+            return View(model);
         }
 
         public IActionResult HowToGet()
         {
-
             return View();
         }
         public IActionResult Contacts()
         {
-
             return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return Redirect("https://ssc.soulsofworld.ru/uploads/oferta_330710629601.docx");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
