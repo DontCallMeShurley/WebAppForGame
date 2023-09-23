@@ -22,31 +22,23 @@ namespace WebAppForGame.api
     public class MainApiController : ControllerBase
     {
         private readonly MainRepository _repository;
-        private readonly ApplicationDbContext _context;
         private readonly ILogger _loggerTest;
-        public MainApiController(MainRepository repository, ApplicationDbContext context, ILogger<MainApiController> logger)
+        public MainApiController(MainRepository repository,  ILogger<MainApiController> logger)
         {
             _repository = repository;
-            _context = context;
             _loggerTest = logger;
         }
+
         [Route("log_login")]
         [HttpPost]
         public async Task<ActionResult> log_login(string userid)
         {
             try
             {
-                var userlogin = new userlog_in()
-                {
-                    Date = DateTime.Now.AddHours(3),
-                    user_id = userid
-                };
-                _context.userlog_in.Add(userlogin);
-                await _context.SaveChangesAsync();
+                await _repository.log_login(userid);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
             return Ok("Successfull");
@@ -58,18 +50,10 @@ namespace WebAppForGame.api
         {
             try
             {
-                var gameover_log = new log_gameover()
-                {
-                    Date = DateTime.Now.AddHours(3),
-                    user_id = log_Gameover.user_id,
-                    score = log_Gameover.score
-                };
-                _context.log_gameover.Add(gameover_log);
-                await _context.SaveChangesAsync();
+                await _repository.log_gameover(log_Gameover);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
             return Ok("Successful");
@@ -81,25 +65,14 @@ namespace WebAppForGame.api
         {
             try
             {
-                var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
-                if (count == 0)
-                {
-                    var mappedId = getUniqueId(7);
-
-                    _context.userid_mapping.Add(new userid_mapping
-                    {
-                        user_id = userid,
-                        mapped_id = mappedId
-                    });
-                    _context.SaveChanges();
-                }
+                var result = await _repository.GetMappedUserId(userid);
+                return Ok(result);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
-            return Ok(_context.userid_mapping.FirstOrDefault(x => x.user_id == userid)?.mapped_id);
+
         }
 
         [Route("GetSerialNumber")]
@@ -108,20 +81,8 @@ namespace WebAppForGame.api
         {
             try
             {
-                var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
-                if (sn == null)
-                {
-                    var mappedId = getUniqueId(10, true);
-
-                    sn = new SerialNumbers
-                    {
-                        user_id = userid,
-                        serial_number = mappedId
-                    };
-                    _context.SerialNumbers.Add(sn);
-                    _context.SaveChanges();
-                }
-                return Ok(sn.serial_number);
+                var result = await _repository.GetSerialNumber(userid);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -129,21 +90,15 @@ namespace WebAppForGame.api
                 return BadRequest(e.Message);
             }
         }
+
         [Route("GetIDWithSN")]
         [HttpGet]
         public async Task<ActionResult> GetIDWithSN(string userid)
         {
             try
             {
-                string serialNumber = await getOrSetSerialNumber(userid);
-                string mappedId = await getOrSetMappedId(userid);
-
-
-                var json = new { serial_number = serialNumber, mappedId = mappedId };
-
-                var jsonResult = JsonConvert.SerializeObject(json);
-
-                return Ok(jsonResult);
+                var result = await _repository.GetIDWithSN(userid);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -151,25 +106,15 @@ namespace WebAppForGame.api
                 return BadRequest(e.Message);
             }
         }
+
         [Route("CreateUserById")]
         [HttpPost]
         public async Task<ActionResult> CreateUserById(string userid)
         {
             try
             {
-                var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
-                if (count > 0)
-                    return BadRequest("Ошибка. Для пользователя уже заведён смапенный аккаунт");
-
-                var mappedId = getUniqueId(7);
-
-                _context.userid_mapping.Add(new userid_mapping
-                {
-                    user_id = userid,
-                    mapped_id = mappedId
-                });
-                await _context.SaveChangesAsync();
-                return Ok(mappedId);
+                var result = await _repository.CreateUserById(userid);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -194,19 +139,19 @@ namespace WebAppForGame.api
 
 
         }
+
         [Route("ProcessPayment")]
         [HttpPost]
         public async Task<IActionResult> ProcessPayment([FromBody] PayMasterData test)
         {
             try
             {
-                var id = test.Id;
+                var id = test.Id ?? 0;
                 var status = test.status;
 
                 _loggerTest.LogInformation($"Proccess payment {test.Id}");
 
-
-                if (id != null && status != null)
+                if (id != 0 && status != null)
                     await _repository.UpdatePaymentStatus(id.ToString(), status);
                 else
                     return BadRequest("Ошибка в вводимых данных");
@@ -219,78 +164,22 @@ namespace WebAppForGame.api
             }
         }
 
-        private async Task<string> getOrSetSerialNumber(string userId)
+        [Route("Log_GameStart")]
+        [HttpPost]
+        public async Task<IActionResult> Log_GameStart(string userId)
         {
-            var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userId);
-            if (sn == null)
+            try
             {
-
-                sn = new SerialNumbers
-                {
-                    user_id = userId,
-                    serial_number = getUniqueId(10, true)
-                };
-                await _context.SerialNumbers.AddAsync(sn);
-                await _context.SaveChangesAsync();
+                await _repository.Log_GameStart(userId);
+                return Ok();
             }
-            return sn.serial_number;
-        }
-        private async Task<string> getOrSetMappedId(string userId)
-        {
-            var sn = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
-            if (sn == null)
+            catch (Exception e)
             {
-
-                sn = new userid_mapping
-                {
-                    user_id = userId,
-                    mapped_id = getUniqueId(7)
-                };
-                await _context.userid_mapping.AddAsync(sn);
-                await _context.SaveChangesAsync();
+                return BadRequest(e.Message);
             }
-            return sn.mapped_id;
+
         }
-        private string getUniqueId(int maxLength, bool isSerial = false)
-        {
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                try
-                {
-                    string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    StringBuilder output = new StringBuilder();
-                    Random rnd = new Random();
-                    string result = "";
 
-                    for (int i = 0; i < maxLength; i++)
-                    {
-
-                        var index = rnd.Next(characters.Length);
-                        output.Append(characters[index]);
-                    }
-                    result = output.ToString();
-
-                    if (isSerial)
-                    {
-                        if (db.SerialNumbers.Any(x => x.serial_number == output.ToString()))
-                            result = getUniqueId(maxLength, true);
-                    }
-                    else
-                    {
-                        if (db.userid_mapping.Any(x => x.mapped_id == output.ToString()))
-                            result = getUniqueId(maxLength);
-                    }
-
-
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return "";
-                }
-            }
-        }
         #region jsonFromPayMaster
         public class Amount
         {

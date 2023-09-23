@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Net.Http;
 using NLog;
 using WebAppForGame.Enums;
+using WebAppForGame.Dtos;
 
 namespace WebAppForGame.Repository
 {
@@ -116,10 +117,27 @@ namespace WebAppForGame.Repository
                 return url;
             }
         }
-        public async Task<Products> GetProducts(int id)
+
+        public async Task Log_GameStart(string userId)
+        {
+            var user = await _context.userid_mapping.FirstOrDefaultAsync(x => x.mapped_id == userId);
+
+            if (user == null)
+                throw new Exception("Not found user");
+
+            await _context.Log_GameStart.AddAsync(new Log_GameStart()
+            {
+                Date = DateTime.Now,
+                UserID = userId
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Products> GetProduct(int id)
         {
             return await _context.Products.FirstAsync(x => x.Id == id);
         }
+
         public async Task UpdatePaymentStatus(string paymentId, string paymentStatus)
         {
             var payment = await _context.Payments.FirstOrDefaultAsync(x => x.PaymentId == paymentId);
@@ -130,9 +148,176 @@ namespace WebAppForGame.Repository
             payment.PaymentStatus = paymentStatus;
             await _context.SaveChangesAsync();
         }
+
         public async Task<List<Products>> GetProducts()
         {
             return await _context.Products.ToListAsync();
+        }
+
+        public async Task log_login(string userId)
+        {
+            var userlogin = new userlog_in()
+            {
+                Date = DateTime.Now.AddHours(3),
+                user_id = userId
+            };
+            _context.userlog_in.Add(userlogin);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task log_gameover(log_gameover_dto log_Gameover)
+        {
+            var gameover_log = new log_gameover()
+            {
+                Date = DateTime.Now.AddHours(3),
+                user_id = log_Gameover.user_id,
+                score = log_Gameover.score
+            };
+            _context.log_gameover.Add(gameover_log);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> GetMappedUserId(string userid)
+        {
+            var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
+            if (count == 0)
+            {
+                var mappedId = await getUniqueId(7);
+
+                await _context.userid_mapping.AddAsync(new userid_mapping
+                {
+                    user_id = userid,
+                    mapped_id = mappedId
+                });
+                await _context.SaveChangesAsync();
+            }
+
+            var result = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userid);
+
+            if (result == null)
+                throw new Exception("Some problems. Not found mappedId");
+
+            return result.mapped_id ?? "";
+        }
+
+        public async Task<string> GetSerialNumber(string userid)
+        {
+            var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userid);
+            if (sn == null)
+            {
+                var mappedId = getUniqueId(10, true);
+
+                sn = new SerialNumbers
+                {
+                    user_id = userid,
+                    serial_number = await mappedId
+                };
+                await _context.SerialNumbers.AddAsync(sn);
+                await _context.SaveChangesAsync();
+            }
+            return sn.serial_number ?? "";
+        }
+
+        public async Task<string> GetIDWithSN(string userid)
+        {
+            string serialNumber = await getOrSetSerialNumber(userid);
+            string mappedId = await getOrSetMappedId(userid);
+
+
+            var json = new { serial_number = serialNumber, mappedId = mappedId };
+
+            var jsonResult = JsonConvert.SerializeObject(json);
+
+            return jsonResult;
+        }
+
+        public async Task<string> CreateUserById(string userid)
+        {
+            var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
+            if (count > 0)
+                throw new Exception("Ошибка. Для пользователя уже заведён смапенный аккаунт");
+
+            var mappedId = await getUniqueId(7);
+
+            _context.userid_mapping.Add(new userid_mapping
+            {
+                user_id = userid,
+                mapped_id = mappedId
+            });
+            await _context.SaveChangesAsync();
+            return mappedId;
+        }
+
+        private async Task<string> getOrSetSerialNumber(string userId)
+        {
+            var sn = await _context.SerialNumbers.FirstOrDefaultAsync(x => x.user_id == userId);
+            if (sn == null)
+            {
+                sn = new SerialNumbers
+                {
+                    user_id = userId,
+                    serial_number = await getUniqueId(10, true)
+                };
+                await _context.SerialNumbers.AddAsync(sn);
+                await _context.SaveChangesAsync();
+            }
+            return sn.serial_number ?? "";
+        }
+
+        private async Task<string> getOrSetMappedId(string userId)
+        {
+            var sn = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
+            if (sn == null)
+            {
+
+                sn = new userid_mapping
+                {
+                    user_id = userId,
+                    mapped_id = await getUniqueId(7)
+                };
+                await _context.userid_mapping.AddAsync(sn);
+                await _context.SaveChangesAsync();
+            }
+            return sn.mapped_id ?? "";
+        }
+
+        private async Task<string> getUniqueId(int maxLength, bool isSerial = false)
+        {
+
+            try
+            {
+                string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                StringBuilder output = new StringBuilder();
+                Random rnd = new Random();
+                string result = "";
+
+                for (int i = 0; i < maxLength; i++)
+                {
+                    var index = rnd.Next(characters.Length);
+                    output.Append(characters[index]);
+                }
+                result = output.ToString();
+
+                if (isSerial)
+                {
+                    if (await _context.SerialNumbers.AnyAsync(x => x.serial_number == output.ToString()))
+                        result = await getUniqueId(maxLength, true);
+                }
+                else
+                {
+                    if (await _context.userid_mapping.AnyAsync(x => x.mapped_id == output.ToString()))
+                        result = await getUniqueId(maxLength);
+                }
+
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return "";
+            }
+
         }
     }
 }
