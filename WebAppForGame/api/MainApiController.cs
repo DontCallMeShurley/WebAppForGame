@@ -61,11 +61,11 @@ namespace WebAppForGame.api
 
         [Route("GetMappedUserId")]
         [HttpGet]
-        public async Task<ActionResult> GetMappedUserId(string userid)
+        public async Task<ActionResult> GetMappedUserId(string useridFromFirebase)
         {
             try
             {
-                var result = await _repository.GetMappedUserId(userid);
+                var result = await _repository.GetMappedUserId(useridFromFirebase);
                 return Ok(result);
             }
             catch (Exception e)
@@ -77,11 +77,11 @@ namespace WebAppForGame.api
 
         [Route("GetSerialNumber")]
         [HttpGet]
-        public async Task<ActionResult> GetSerialNumber(string userid)
+        public async Task<ActionResult> GetSerialNumber(string useridFromFirebase)
         {
             try
             {
-                var result = await _repository.GetSerialNumber(userid);
+                var result = await _repository.GetSerialNumber(useridFromFirebase);
                 return Ok(result);
             }
             catch (Exception e)
