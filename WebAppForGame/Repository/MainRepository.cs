@@ -120,12 +120,9 @@ namespace WebAppForGame.Repository
 
         public async Task Log_GameStart(string userId)
         {
-            var user = await _context.userid_mapping.FirstOrDefaultAsync(x => x.mapped_id == userId);
+            await checkUserID(userId);
 
-            if (user == null)
-                throw new Exception("Not found user");
-
-            await _context.Log_GameStart.AddAsync(new Log_GameStart()
+             await _context.Log_GameStart.AddAsync(new Log_GameStart()
             {
                 Date = DateTime.Now,
                 UserID = userId
@@ -156,6 +153,8 @@ namespace WebAppForGame.Repository
 
         public async Task log_login(string userId)
         {
+            await checkUserID(userId);
+
             var userlogin = new userlog_in()
             {
                 Date = DateTime.Now.AddHours(3),
@@ -167,6 +166,8 @@ namespace WebAppForGame.Repository
 
         public async Task log_gameover(log_gameover_dto log_Gameover)
         {
+            await checkUserID(log_Gameover.user_id);
+
             var gameover_log = new log_gameover()
             {
                 Date = DateTime.Now.AddHours(3),
@@ -177,22 +178,22 @@ namespace WebAppForGame.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<string> GetMappedUserId(string userid)
+        public async Task<string> GetMappedUserId(string userId)
         {
-            var count = await _context.userid_mapping.CountAsync(x => x.user_id == userid);
+            var count = await _context.userid_mapping.CountAsync(x => x.user_id == userId);
             if (count == 0)
             {
                 var mappedId = await getUniqueId(7);
 
                 await _context.userid_mapping.AddAsync(new userid_mapping
                 {
-                    user_id = userid,
+                    user_id = userId,
                     mapped_id = mappedId
                 });
                 await _context.SaveChangesAsync();
             }
 
-            var result = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userid);
+            var result = await _context.userid_mapping.FirstOrDefaultAsync(x => x.user_id == userId);
 
             if (result == null)
                 throw new Exception("Some problems. Not found mappedId");
@@ -246,6 +247,14 @@ namespace WebAppForGame.Repository
             });
             await _context.SaveChangesAsync();
             return mappedId;
+        }
+
+        private async Task checkUserID(string userID)
+        {
+            var user = await _context.userid_mapping.FirstOrDefaultAsync(x => x.mapped_id == userID);
+
+            if (user == null)
+                throw new Exception("Not found user");
         }
 
         private async Task<string> getOrSetSerialNumber(string userId)
