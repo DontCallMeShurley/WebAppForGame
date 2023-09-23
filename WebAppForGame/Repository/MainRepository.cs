@@ -10,6 +10,7 @@ using WebAppForGame.ViewModels;
 using System.Configuration;
 using System.Net.Http;
 using NLog;
+using WebAppForGame.Enums;
 
 namespace WebAppForGame.Repository
 {
@@ -36,7 +37,7 @@ namespace WebAppForGame.Repository
             {
                 log_Gameovers = gameovers,
                 TotalLoginPerDay = _context.userlog_in.Count(x => x.Date > DateTime.Today),
-                TotalPaid = 180,
+                TotalPaid = _context.Payments.Where(x => x.PaymentStatus == StatusPayment.Settled).Sum(x => x.Product != null ? x.Product.Amount : 0),
                 TotalUsers = userIdMapping.Count(),
                 MaxPoints = gameovers.Max(x => x.score),
                 TotalGameOversPerDay = gameovers.Count(x => x.Date > DateTime.Today),
@@ -61,7 +62,7 @@ namespace WebAppForGame.Repository
                 {
                     Product = product,
                     UserID = user.mapped_id,
-                    PaymentStatus = "pending",
+                    PaymentStatus = StatusPayment.Pending,
                     Date = DateTime.Now.AddHours(3)
                 };
 
@@ -86,7 +87,7 @@ namespace WebAppForGame.Repository
                     {
                         account = userID
                     },
-                    protocol = new 
+                    protocol = new
                     {
                         returnUrl = "http://patchipablo.ru/Home/Thanks",
                         callbackUrl = "http://patchipablo.ru:32789/api/MainApi/ProcessPayment"
