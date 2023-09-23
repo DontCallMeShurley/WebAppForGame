@@ -14,6 +14,8 @@ namespace WebAppForGame.Data
 
         [Display(Name = "Товар")]
         public Products? Product { get; set; }
+
+        [Display(Name = "Номер заказа")]
         public string? PaymentId { get; set; }
 
         [Display(Name = "Статус платежа")]

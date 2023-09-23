@@ -27,6 +27,10 @@ namespace WebAppForGame.Controllers
         {
             return View();
         }
+        public IActionResult Thanks()
+        {
+            return View();
+        }
         public IActionResult Contacts()
         {
             return View();

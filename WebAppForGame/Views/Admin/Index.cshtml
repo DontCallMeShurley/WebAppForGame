@@ -8,7 +8,7 @@
     <main>
         <div class="header">
             <div class="left">
-                <h1>Панель мониторинга</h1>
+                <h1>Мониторинг</h1>
                 <ul class="breadcrumb">
                     <li>
                         <a href="/Admin">
@@ -90,14 +90,14 @@
                                 @{
                                     switch (payment.PaymentStatus)
                                     {
-                                        case "pending":
-                                            <td><span class="status pending">Ожидание</span></td>
-                                            break;  
-                                        case "successfull":
+                                        case "Rejected":
+                                            <td><span class="status danger">Отмена</span></td>
+                                            break;
+                                        case "Settled":
                                             <td><span class="status completed">Успешно</span></td>
                                             break;
                                         default:
-                                            <td><span class="status danger">Отмена</span></td>
+                                            <td><span class="status pending">Ожидание</span></td>
                                             break;
                                     }
                                 }

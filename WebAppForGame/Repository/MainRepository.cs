@@ -9,6 +9,7 @@ using WebAppForGame.Data;
 using WebAppForGame.ViewModels;
 using System.Configuration;
 using System.Net.Http;
+using NLog;
 
 namespace WebAppForGame.Repository
 {
@@ -61,7 +62,7 @@ namespace WebAppForGame.Repository
                     Product = product,
                     UserID = user.mapped_id,
                     PaymentStatus = "pending",
-                    Date = DateTime.Now
+                    Date = DateTime.Now.AddHours(3)
                 };
 
                 var settings = await _context.Settings.FirstAsync();
@@ -84,6 +85,11 @@ namespace WebAppForGame.Repository
                     customer = new
                     {
                         account = userID
+                    },
+                    protocol = new 
+                    {
+                        returnUrl = "http://patchipablo.ru/Home/Thanks",
+                        callbackUrl = "http://patchipablo.ru:32789/api/MainApi/ProcessPayment"
                     },
                     paymentMethod = "bankcard"
                 };
@@ -113,13 +119,19 @@ namespace WebAppForGame.Repository
         {
             return await _context.Products.FirstAsync(x => x.Id == id);
         }
+        public async Task UpdatePaymentStatus(string paymentId, string paymentStatus)
+        {
+            var payment = await _context.Payments.FirstOrDefaultAsync(x => x.PaymentId == paymentId);
+
+            if (payment == null)
+                throw new Exception("Not found payments");
+
+            payment.PaymentStatus = paymentStatus;
+            await _context.SaveChangesAsync();
+        }
         public async Task<List<Products>> GetProducts()
         {
             return await _context.Products.ToListAsync();
-        }
-        private async void Save()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

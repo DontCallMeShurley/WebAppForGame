@@ -52,7 +52,7 @@
             {
                 columns.AddFor(m => m.user_id);
 
-                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime).SortOrder(SortOrder.Desc);
 
                 columns.AddFor(m => m.score);
 
@@ -102,7 +102,7 @@
             {
                 columns.AddFor(m => m.user_id);
 
-                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+                columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime).SortOrder(SortOrder.Desc);
 
             })
             .DataSource(ds => ds.Mvc()

@@ -43,7 +43,9 @@
                 {
                     columns.AddFor(m => m.UserID);
 
-                    columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime);
+                    columns.AddFor(m => m.Date).DataType(GridColumnDataType.DateTime).SortOrder(SortOrder.Desc);
+
+                    columns.AddFor(m => m.PaymentId);
 
                     columns.AddFor(m => m.Product.Name).Caption("Товар");
 

@@ -34,7 +34,7 @@
             <div class="logo-name"><span>Speed</span>Box</div>
         </a>
         <ul class="side-menu">
-            <li class="@(ViewBag.currentLayer == 0 ? "active" : "")"><a href="/Admin"><i class='bx bxs-dashboard'></i>Панель мониторинга</a></li>
+            <li class="@(ViewBag.currentLayer == 0 ? "active" : "")"><a href="/Admin"><i class='bx bxs-dashboard'></i>Мониторинг</a></li>
             <li class="@(ViewBag.currentLayer == 1 ? "active" : "")"><a href="/Admin/Products"><i class='bx bx-store-alt'></i>Товары</a></li>
             <li class="@(ViewBag.currentLayer == 2 ? "active" : "")"><a href="/Admin/Payments"><i class='bx bx-ruble'></i>Заказы</a></li>
             <li class="@(ViewBag.currentLayer == 3 ? "active" : "")"><a href="/Admin/Logs"><i class='bx bx-message-square-dots'></i>Логи игроков</a></li>
@@ -60,7 +60,7 @@
                 </div>
             </form>
             <input type="checkbox" id="theme-toggle" checked hidden>
-            <label for="theme-toggle" class="theme-toggle"></label>
+            @*<label for="theme-toggle" class="theme-toggle"></label>*@
 
             <a href="#" class="profile">
                 <img src="~/img/logo.jpg">

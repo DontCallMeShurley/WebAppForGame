@@ -3,12 +3,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Web.Administration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NLog;
 using System.Text;
+using WebAppForGame.Controllers;
 using WebAppForGame.Data;
 using WebAppForGame.Dtos;
 using WebAppForGame.Repository;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace WebAppForGame.api
 {
@@ -18,10 +23,12 @@ namespace WebAppForGame.api
     {
         private readonly MainRepository _repository;
         private readonly ApplicationDbContext _context;
-        public MainApiController(MainRepository repository, ApplicationDbContext context)
+        private readonly ILogger _loggerTest;
+        public MainApiController(MainRepository repository, ApplicationDbContext context, ILogger<MainApiController> logger)
         {
             _repository = repository;
             _context = context;
+            _loggerTest = logger;
         }
         [Route("log_login")]
         [HttpPost]
@@ -31,7 +38,7 @@ namespace WebAppForGame.api
             {
                 var userlogin = new userlog_in()
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.Now.AddHours(3),
                     user_id = userid
                 };
                 _context.userlog_in.Add(userlogin);
@@ -53,7 +60,7 @@ namespace WebAppForGame.api
             {
                 var gameover_log = new log_gameover()
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.Now.AddHours(3),
                     user_id = log_Gameover.user_id,
                     score = log_Gameover.score
                 };
@@ -170,6 +177,7 @@ namespace WebAppForGame.api
                 return BadRequest(e.Message);
             }
         }
+
         [Route("CreatePayment")]
         [HttpGet]
         public async Task<ActionResult> CreatePayment(string userID, int productID)
@@ -185,6 +193,30 @@ namespace WebAppForGame.api
             }
 
 
+        }
+        [Route("ProcessPayment")]
+        [HttpPost]
+        public async Task<IActionResult> ProcessPayment([FromBody] PayMasterData test)
+        {
+            try
+            {
+                var id = test.Id;
+                var status = test.status;
+
+                _loggerTest.LogInformation($"Proccess payment {test.Id}");
+
+
+                if (id != null && status != null)
+                    await _repository.UpdatePaymentStatus(id.ToString(), status);
+                else
+                    return BadRequest("Ошибка в вводимых данных");
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _loggerTest.LogError($"Proccess payment failed. {e.Message}");
+                return BadRequest(e.Message);
+            }
         }
 
         private async Task<string> getOrSetSerialNumber(string userId)
@@ -259,5 +291,45 @@ namespace WebAppForGame.api
                 }
             }
         }
+        #region jsonFromPayMaster
+        public class Amount
+        {
+            public decimal Value { get; set; }
+            public string? Currency { get; set; }
+        }
+
+        public class Params
+        {
+            [JsonProperty("BT_USR")]
+            public string? BT_USR { get; set; }
+        }
+
+        public class Invoice
+        {
+            public string? description { get; set; }
+            public Params? Params { get; set; }
+        }
+
+        public class PaymentData
+        {
+            [JsonProperty("paymentMethod")]
+            public string? paymentMethod { get; set; }
+
+            [JsonProperty("paymentInstrumentTitle")]
+            public string? paymentInstrumentTitle { get; set; }
+        }
+
+        public class PayMasterData
+        {
+            public int? Id { get; set; }
+            public DateTime created { get; set; }
+            public bool testMode { get; set; }
+            public string? status { get; set; }
+            public string? merchantId { get; set; }
+            public Amount? amount { get; set; }
+            public Invoice? invoice { get; set; }
+            public PaymentData? paymentData { get; set; }
+        }
+        #endregion
     }
 }
