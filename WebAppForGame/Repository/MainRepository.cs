@@ -118,16 +118,18 @@ namespace WebAppForGame.Repository
             }
         }
 
-        public async Task Log_GameStart(string userId)
+        public async Task<int> Log_GameStart(string userId)
         {
             await checkUserID(userId);
 
-             await _context.Log_GameStart.AddAsync(new Log_GameStart()
+            await _context.Log_GameStart.AddAsync(new Log_GameStart()
             {
                 Date = DateTime.Now,
                 UserID = userId
             });
             await _context.SaveChangesAsync();
+
+            return await getAvaliableCoins(userId);
         }
 
         public async Task<Products> GetProduct(int id)
@@ -224,8 +226,17 @@ namespace WebAppForGame.Repository
             string serialNumber = await getOrSetSerialNumber(userid);
             string mappedId = await getOrSetMappedId(userid);
 
+            var avaliableCoins = await getAvaliableCoins(mappedId);
 
-            var json = new { serial_number = serialNumber, mappedId = mappedId };
+            var json = new { serial_number = serialNumber, mappedId, avaliableCoins };
+
+            var userlogin = new userlog_in()
+            {
+                Date = DateTime.Now.AddHours(3),
+                user_id = mappedId
+            };
+            _context.userlog_in.Add(userlogin);
+            await _context.SaveChangesAsync();
 
             var jsonResult = JsonConvert.SerializeObject(json);
 
@@ -247,6 +258,12 @@ namespace WebAppForGame.Repository
             });
             await _context.SaveChangesAsync();
             return mappedId;
+        }
+
+        public async Task<bool> CheckUserID(string userId)
+        {
+            var isExist = await _context.userid_mapping.AnyAsync(x => x.mapped_id == userId);
+            return isExist;
         }
 
         private async Task checkUserID(string userID)
@@ -327,6 +344,14 @@ namespace WebAppForGame.Repository
                 return "";
             }
 
+        }
+
+        private async Task<int> getAvaliableCoins(string mappedId)
+        {
+           var avaliableCoins = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).SumAsync(x => x.Product.Coins)
+                               - await _context.Log_GameStart.CountAsync(x => x.UserID == mappedId);
+
+            return avaliableCoins;
         }
     }
 }

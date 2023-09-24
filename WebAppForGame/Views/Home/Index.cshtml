@@ -15,7 +15,7 @@
                     <div class="level">@product.Name</div>
                     <h2>@product.Amount</h2>
                     <p>@product.Description</p>
-                    <button btn btn-pay btn-pay-1>Выбрать</button>
+                    <button class="btn btn-primary" id="@product.Id" onclick="clickbtn(this.id)">Выбрать</button>
                 </div>
             }
         </section>
@@ -23,48 +23,8 @@
 
 
 </div>
-
-
-<script src="https://paymaster.ru/cpay/sdk/payment-widget.js"></script>
-<style>
-    button[btn-pay] {
-        display: inline-block;
-        padding: 16px 24px;
-        border-radius: 8px;
-
-        background-color: #d9c404;
-        font-size: 16px;
-        font-family: "Lato", "Arial", sans-serif;
-        line-height: 16px;
-        outline: none;
-        border: none;
-
-    }
-
-        button[btn-pay]:hover {
-            opacity: 0.9;
-            cursor: pointer;
-        }
-</style>
-
-<!-- Встройте этот фрагмент внизу страницы, в конце тега body. -->
-<script>
-    if (document.querySelector("[btn-pay-3]")) {
-        document.querySelector("[btn-pay-3]").addEventListener("click", function () {
-            var paymentWidget = new cpay.PaymentWidget();
-            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "30 попыток" }, "amount": { "currency": "RUB", "value": 500 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "30 попыток", "description": null, "imageUrl": null }, "fields": null } });
-        });
-    }
-    if (document.querySelector("[btn-pay-2]")) {
-        document.querySelector("[btn-pay-2]").addEventListener("click", function () {
-            var paymentWidget = new cpay.PaymentWidget();
-            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "10 попыток" }, "amount": { "currency": "RUB", "value": 180 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "10 попыток", "description": null, "imageUrl": null }, "fields": null } });
-        });
-    }
-    if (document.querySelector("[btn-pay-1]")) {
-        document.querySelector("[btn-pay-1]").addEventListener("click", function () {
-            var paymentWidget = new cpay.PaymentWidget();
-            paymentWidget.init({ "merchantId": "a6cdc984-53ec-4792-bce0-184ad61cbacd", "invoice": { "description": "5 попыток" }, "amount": { "currency": "RUB", "value": 100 }, "receipt": null, "paymentForm": { "theme": "light", "primaryColor": "#d9c404", "productCard": { "title": "5 попыток", "description": null, "imageUrl": null }, "fields": null } });
-        });
+<script type="text/javascript">
+    function clickbtn(clicked_id) {
+        alert(clicked_id);
     }
 </script>

@@ -102,7 +102,6 @@ namespace WebAppForGame.api
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -170,8 +169,10 @@ namespace WebAppForGame.api
         {
             try
             {
-                await _repository.Log_GameStart(userId);
-                return Ok();
+                var avaliableCoins = await _repository.Log_GameStart(userId);
+
+                var jsonResult = JsonConvert.SerializeObject(new {avaliableCoins});
+                return Ok(jsonResult);
             }
             catch (Exception e)
             {

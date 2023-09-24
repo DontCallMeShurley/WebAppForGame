@@ -17,9 +17,15 @@ namespace WebAppForGame.Controllers
             _repository = repository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string userId)
         {
+            var check = await _repository.CheckUserID(userId);
+
+            if (userId == null || !check)
+                return NotFound();
+
             var model = await _repository.GetProducts();
+            ViewBag.UserId = userId;
             return View(model);
         }
 
