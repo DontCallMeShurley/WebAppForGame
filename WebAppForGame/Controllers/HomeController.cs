@@ -25,6 +25,7 @@ namespace WebAppForGame.Controllers
                 return NotFound();
 
             var model = await _repository.GetProducts();
+
             ViewBag.UserId = userId;
             return View(model);
         }
