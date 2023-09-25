@@ -1,4 +1,5 @@
 using EFCoreDockerMySQL;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebAppForGame.api;
 using WebAppForGame.Repository;
@@ -22,6 +23,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 11)));
 });
 
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option => {
+        option.LoginPath = "/Access/Login";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(30);    
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,7 +51,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

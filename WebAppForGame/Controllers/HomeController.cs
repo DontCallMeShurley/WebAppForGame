@@ -19,6 +19,11 @@ namespace WebAppForGame.Controllers
 
         public async Task<IActionResult> Index(string userId)
         {
+            return View();
+        }
+
+        public async Task<IActionResult> Products(string userId)
+        {
             var check = await _repository.CheckUserID(userId);
 
             if (userId == null || !check)

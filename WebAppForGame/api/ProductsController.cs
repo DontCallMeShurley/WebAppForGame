@@ -12,9 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFCoreDockerMySQL;
 using WebAppForGame.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAppForGame.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class ProductsController : Controller
     {

@@ -8,56 +8,24 @@
 
 <div id="page-wrapper">
     <div class="container">
-        <section id="pricing" style="overflow: auto">
-            @foreach (var product in Model)
-            {
-                <div class="product" id="tenor">
-                    <div class="level">@product.Name</div>
-                    <h2>@product.Amount</h2>
-                    <p>@product.Description</p>
-                    <button btn btn-pay  id="@product.Id" onclick="clickbtn(this.id)">Выбрать</button>
-                </div>
-            }
-        </section>
+        <br />
+       <h4>
+           Добро пожаловать!
+       </h4>
+       <br />
+       <h5>
+           Говорит команда разработчиков SpeedBox. Мы рады Вас видеть.
+        </h5>
+        <h5>
+           Для доступа к списку товаров, пожалуйста, перейдите по ссылке в игре.
+        </h5>
+        <h5>      
+            Спасибо, что Вы с нами!
+        </h5>
+
+
     </div>
 
 
 </div>
-<script type="text/javascript">
-    function clickbtn(clicked_id) {
-        var params = new URLSearchParams({ userID: '@ViewBag.UserId', productID: clicked_id });
 
-        fetch('/api/MainApi/CreatePayment?' + params)
-            .then(function (response) {
-                if (response.ok) {
-                    return response.text();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(function (data) {
-                window.location.href = data;  
-            })
-            .catch(function (error) {
-                console.log('Error:', error.message);
-            });
-    }
-</script>
-<style>
-    button[btn-pay] {
-        display: inline-block;
-        padding: 18px 24px;
-        border-radius: 8px;
-        background-color: #d9c404;
-        font-size: 18px;
-        font-family: "Lato", "Arial", sans-serif;
-        line-height: 18px;
-        outline: none;
-        border: none;
-        font-weight: bold;
-    }
-
-        button[btn-pay]:hover {
-            opacity: 0.9;
-            cursor: pointer;
-        }
-</style>

@@ -1,20 +1,12 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using EFCoreDockerMySQL;
-using WebAppForGame.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAppForGame.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class userlog_inController : Controller
     {
@@ -34,12 +26,6 @@ namespace WebAppForGame.Controllers
                 i.Date,
                 i.user_id
             });
-
-            // If underlying data is a large SQL table, specify PrimaryKey and PaginateViaPrimaryKey.
-            // This can make SQL execution plans more efficient.
-            // For more detailed information, please refer to this discussion: https://github.com/DevExpress/DevExtreme.AspNet.Data/issues/336.
-            // loadOptions.PrimaryKey = new[] { "id" };
-            // loadOptions.PaginateViaPrimaryKey = true;
 
             return Json(await DataSourceLoader.LoadAsync(userlog_in, loadOptions));
         }

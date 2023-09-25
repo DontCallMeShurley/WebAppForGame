@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebAppForGame.Repository;
@@ -6,15 +9,17 @@ using WebAppForGame.ViewModels;
 
 namespace WebAppForGame.Controllers
 {
-
+    [Authorize]
     public class AdminController : Controller
     {
+
         private readonly MainRepository _repository;
         public AdminController(MainRepository repository)
         {
             _repository = repository;
         }
         // GET: AdminController
+
         public ActionResult Index()
         {
             var model =  _repository.GetViewModel();
@@ -41,7 +46,11 @@ namespace WebAppForGame.Controllers
         {
             return View();
         }
-
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Access");
+        }
         // GET: AdminController/Details/5
         public ActionResult Details(int id)
         {
