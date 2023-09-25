@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Reflection;
 using WebAppForGame.Models;
@@ -17,12 +18,12 @@ namespace WebAppForGame.Controllers
             _repository = repository;
         }
 
-        public async Task<IActionResult> Index(string userId)
+        public IActionResult Index()
         {
             return View();
         }
-
-        public async Task<IActionResult> Products(string userId)
+      
+        public async Task<IActionResult> Store(string userId)
         {
             var check = await _repository.CheckUserID(userId);
 
@@ -38,6 +39,14 @@ namespace WebAppForGame.Controllers
         public IActionResult HowToGet()
         {
             return View();
+        }
+        public FileResult Download()
+        {
+            string fileName = "SpeedBox.apk";
+
+            string fileType = "application/vnd.android.package-archive";
+
+            return File("/files/SpeedBox.apk", fileType, fileName);
         }
         public IActionResult Thanks()
         {

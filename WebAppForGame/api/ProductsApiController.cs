@@ -18,11 +18,11 @@ namespace WebAppForGame.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
-    public class ProductsController : Controller
+    public class ProductsApiController : Controller
     {
         private ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context) {
+        public ProductsApiController(ApplicationDbContext context) {
             _context = context;
         }
 
