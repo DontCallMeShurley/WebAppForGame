@@ -90,7 +90,7 @@ namespace WebAppForGame.Repository
                     },
                     protocol = new
                     {
-                        returnUrl = "http://patchipablo.ru/Home/Thanks",
+                        returnUrl = "speedbox://mylink?Menu1",
                         callbackUrl = "http://patchipablo.ru:32789/api/MainApi/ProcessPayment"
                     },
                     paymentMethod = "bankcard"
