@@ -4,7 +4,9 @@ namespace WebAppForGame.ViewModels
 {
     public class DashboardViewModel
     {
-        public List<log_gameover> log_Gameovers { get; set; }
+        public List<log_gameover>? log_Gameovers { get; set; }
+
+        public List<Payments>? Payments{ get; set; }
 
         public int TotalUsers { get; set; }
 

@@ -13,6 +13,7 @@ namespace EFCoreDockerMySQL
         public DbSet<Payments> Payments { get; set; }
         public DbSet<Products> Products { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<Log_GameStart> Log_GameStart { get; set; }
 
         public ApplicationDbContext()
         {

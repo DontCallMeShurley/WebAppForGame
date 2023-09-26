@@ -1,19 +1,54 @@
-﻿@using WebAppForGame.ViewModels
-@model SettingsViewModel
-
-
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
 @{
+    ViewData["Title"] = "Настройки";
     Layout = "_Layout";
+    ViewBag.currentLayer = 5;
 }
-@(Html.DevExtreme().Form<WebAppForGame.Data.Settings>()
-    .Items(items => {
-        items.AddGroup().Caption("Group1").Items(groupItems => {
 
-            groupItems.AddSimpleFor(m => m.BearerToken);
+<main>
+    <div class="header">
+        <div class="left">
+            <h1>Настройки системы</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/Admin">
+                        Admin
+                    </a>
+                </li>
+                /
+                <li><a href="/Settings" class="active">Settings</a></li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    @(Html.DevExtreme().DataGrid<Settings>()
+        .ID("gridContainer")
+        .Paging(paging => paging.Enabled(false))
+        .ColumnAutoWidth(true)
+        .ColumnHidingEnabled(true)
+        .Editing(editing =>
+        {
+            editing.Mode(GridEditMode.Cell);
+            editing.AllowUpdating(true);
+        })
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.MerchantId).Caption("Идентификатор магазина");
 
-            groupItems.AddSimpleFor(m => m.MerchantId);
-        });
-    })
-)
+            columns.AddFor(m => m.BearerToken).Caption("Токен доступа");
 
-<script src="~/js/index.js"></script>
+        })
+        .DataSource(d => d.WebApi().Controller("Settings")
+                                .LoadAction("Get")
+                                .InsertAction("Post")
+                                .UpdateAction("Put")
+                                .DeleteAction("Delete").Key("Id"))
+        )
+</main>
+<style>
+    .dx-datagrid {
+       border-radius: 0px;
+    }
+
+</style>

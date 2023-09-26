@@ -1,4 +1,4 @@
-﻿using DevExpress.Xpo;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebAppForGame.Data
 {

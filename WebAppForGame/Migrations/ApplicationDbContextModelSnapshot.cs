@@ -19,6 +19,23 @@ namespace WebAppForGame.Migrations
                 .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("WebAppForGame.Data.Log_GameStart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Log_GameStart");
+                });
+
             modelBuilder.Entity("WebAppForGame.Data.Payments", b =>
                 {
                     b.Property<Guid>("Id")
@@ -59,6 +76,9 @@ namespace WebAppForGame.Migrations
                     b.Property<int>("Coins")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -74,11 +94,9 @@ namespace WebAppForGame.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("serial_number")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("user_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("id");
@@ -109,14 +127,13 @@ namespace WebAppForGame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<long>("score")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("time")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("user_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("id");
@@ -131,11 +148,9 @@ namespace WebAppForGame.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("mapped_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("user_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("id");
@@ -149,11 +164,10 @@ namespace WebAppForGame.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<long>("time")
-                        .HasColumnType("bigint");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("user_id")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("id");

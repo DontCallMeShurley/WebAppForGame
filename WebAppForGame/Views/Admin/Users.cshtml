@@ -1,0 +1,132 @@
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
+
+@{
+    Layout = "_Layout";
+    ViewBag.currentLayer = 4;
+}
+<main>
+    <div class="header">
+        <div class="left">
+            <h1>Логи</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/Admin">
+                        Admin
+                    </a>
+                </li>
+                /
+                <li><a href="/Users" class="active">Users</a></li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    @(Html.DevExtreme().TabPanel()
+        .ID("tabPanel")
+        .DataSource(new[] {
+                new { text = "Внутренние ID" },
+                new { text = "Серийные номера" }
+        })
+        .ItemTemplate(new JS("tabPanelTemplate"))
+        .ItemTitleTemplate(@<text><span class="dx-tab-text"><%- text %></span></text>)
+        .DeferRendering(false))
+
+    @(Html.DevExtreme().DataGrid<userid_mapping>()
+        .ID("mapped_grid")
+        .ShowBorders(false)
+        .FilterRow(filterRow => filterRow
+        .Visible(true)
+        .ApplyFilter(GridApplyFilterMode.Auto)
+        )
+        .SearchPanel(searchPanel => searchPanel
+        .Visible(true)
+        .Width(240)
+        .Placeholder("Поиск...")
+        )
+        .ColumnAutoWidth(true)
+        .ColumnHidingEnabled(true)
+        .Paging(paging => paging.PageSize(5))
+        .RemoteOperations(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.user_id);
+
+            columns.AddFor(m => m.mapped_id);
+
+        })
+        .DataSource(ds => ds.Mvc()
+        .Controller("userid_mapping")
+        .LoadAction("Get")
+        .Key("id")
+        )
+        .Summary(s => s.TotalItems(items =>
+        {
+            items.AddFor(m => m.user_id)
+            .SummaryType(SummaryType.Count);
+        })
+        )
+        )
+    @(Html.DevExtreme().DataGrid<SerialNumbers>()
+        .ID("serial_grid")
+        .ShowBorders(false)
+        .FilterRow(filterRow => filterRow
+        .Visible(true)
+        .ApplyFilter(GridApplyFilterMode.Auto)
+        )
+        .SearchPanel(searchPanel => searchPanel
+        .Visible(true)
+        .Width(240)
+        .Placeholder("Поиск...")
+        )
+        .ColumnAutoWidth(true)
+        .ColumnHidingEnabled(true)
+        .Paging(paging => paging.PageSize(5))
+        .RemoteOperations(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.user_id);
+
+            columns.AddFor(m => m.serial_number);
+
+        })
+        .DataSource(ds => ds.Mvc()
+        .Controller("SerialNumbers")
+        .LoadAction("Get")
+        .Key("id")
+        )
+        .Summary(s => s.TotalItems(items =>
+        {
+            items.AddFor(m => m.user_id)
+            .SummaryType(SummaryType.Count);
+
+        })
+        )
+        )
+</main>
+<script>
+    var formatDate = new Intl.DateTimeFormat("ru-RU", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }).format;
+    var mappedCaption = "Внутренние ID";
+    var serialCaption = "Серийные номера";
+
+    function tabPanelTemplate(itemData, itemIndex, itemElement) {
+        if (itemData.text === mappedCaption) {
+            var $gridContainer = $("<div id='mapped_grid'>");
+
+            itemElement.append($gridContainer);
+        }
+        if (itemData.text === serialCaption) {
+            var $gridContainer = $("<div id='serial_grid'>");
+
+            itemElement.append($gridContainer);
+        }
+    }
+</script>
+<style>
+    .dx-datagrid {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+
+</style>

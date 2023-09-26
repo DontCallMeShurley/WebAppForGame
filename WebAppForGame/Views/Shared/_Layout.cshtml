@@ -4,6 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SpeedBox магазин</title>
+    <link href="~/css/devextreme/bootstrap.css" rel="stylesheet" />
+
+    <link href="~/css/devextreme/dx.light.css" rel="stylesheet" />
+    <script src="~/js/devextreme/jquery.js"></script>
+    <script src="~/js/devextreme/bootstrap.js"></script>
+
+    <script src="~/js/devextreme/dx.all.js"></script>
+    <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
+    <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebAppForGame.styles.css" asp-append-version="true" />
@@ -19,7 +28,7 @@
                     <a href="/" class="nav-link link-dark px-2"><b>Главная страница</b></a>
                 </li>
                 <li class="nav-item" align="right">
-                    <a href="https://disk.yandex.ru/d/Xucs1PWe74x00w" target="_blank" class="nav-link link-dark px-2"><b>Скачать игру</b></a>
+                    <a href="/Home/Download" target="_blank" class="nav-link link-dark px-2"><b>Скачать игру</b></a>
                 </li>
                 <li>
                     <a href="/files/oferta.pdf" target="_blank" class="nav-link link-dark px-2"><b>Публичная оферта</b></a>
@@ -41,12 +50,19 @@
         </main>
     </div>
 
-    <div id="footer">
-        <h5>
-            2023 - SpeedBox. Официальный магазин
-            <img src="/files/payment system logos.png" />
-        </h5>
-    </div>
+
+    <footer class="border-top">
+        <div style="text-align: center">
+            <h5>
+                2023 - SpeedBox. Официальный магазин
+                <img src="/files/payment system logos.png" />
+                <a href="https://paymaster.ru" target="_blank">
+                    <img src="/img/logo-paymaster-white-transformed.png" alt="PayMaster">
+                </a>
+            </h5>
+        </div>
+
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

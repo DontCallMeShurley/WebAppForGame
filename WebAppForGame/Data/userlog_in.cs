@@ -5,7 +5,11 @@ namespace WebAppForGame.Data
     {
         [Key]
         public Guid id { get; set; }
-        public long time { get; set; }
-        public string user_id { get; set; }
+
+        [Display(Name = "Дата входа")]
+        public DateTime Date { get; set; }
+
+        [Display(Name = "Пользователь")]
+        public string? user_id { get; set; }
     }
 }

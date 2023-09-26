@@ -1,0 +1,110 @@
+﻿@model WebAppForGame.Models.VmLogin
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-form {
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            box-shadow: 0px 2px 4px rgba(255, 255, 255, 0.2);
+            margin: auto;
+            max-width: 400px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+            .login-form h1 {
+                color: #fff;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .login-form input[type="email"],
+            .login-form input[type="password"] {
+                background-color: #333;
+                border: 1px solid #555;
+                border-radius: 4px;
+                box-sizing: border-box;
+                color: #fff;
+                display: block;
+                font-size: 16px;
+                margin: 0 auto 10px auto;
+                padding: 10px;
+                width: 100%;
+            }
+
+            .login-form label {
+                color: #ccc;
+                display: inline-block;
+                font-size: 14px;
+                margin-bottom: 10px;
+                text-align: left;
+                width: 100%;
+            }
+
+            .login-form button[type="submit"] {
+                background-color: #428bca;
+                border: none;
+                border-radius: 4px;
+                color: #fff;
+                cursor: pointer;
+                display: block;
+                font-size: 16px;
+                margin: 20px auto 0 auto;
+                padding: 10px 20px;
+            }
+
+                .login-form button[type="submit"]:hover {
+                    background-color: #337ab7;
+                }
+
+            .login-form .error-message {
+                color: #ff6666;
+                font-size: 14px;
+                margin-top: 10px;
+                text-align: left;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+        <h1>Вход в систему</h1>
+        <form asp-controller="Access" asp-action="Login" method="post">
+            <label for="Email">Электронная почта</label>
+            <input type="email" id="Email" name="Email" placeholder="Электронная почта" asp-for="Email" required/>
+
+            <label for="Password">Пароль</label>
+            <input type="password" id="Password" name="Password" placeholder="Пароль" asp-for="Password"  required/>
+
+            <label>
+                <input type="checkbox" asp-for="KeepLoggedIn" />
+               Оставаться в сети
+            </label>
+
+            <button type="submit">Войти</button>
+
+            
+            <div class="error-message">@ViewData["ValidateMessage"]</div>
+
+        </form>
+    </div>
+</body>
+</html>

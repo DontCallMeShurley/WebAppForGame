@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppForGame", "WebAppForGame\WebAppForGame.csproj", "{2B0CA8C2-B0DE-4D1F-98B4-4FD2B0C4D14E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevExtreme NuGet.config", "DevExtreme NuGet.config", "{323F1655-A275-4FF4-A04D-28F05C552FCC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevExtreme NuGet.config", "DevExtreme NuGet.config", "{55B9BE65-2296-417E-AA39-6CB6FCB783F5}"
 	ProjectSection(SolutionItems) = preProject
 		NuGet.config = NuGet.config
 	EndProjectSection

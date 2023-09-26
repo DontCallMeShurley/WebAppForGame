@@ -5,7 +5,11 @@ namespace WebAppForGame.Data
     {
         [Key]
         public Guid id { get; set; }
-        public string user_id { get; set; }
-        public string mapped_id { get; set; }
+
+        [Display(Name = "ID пользователя")]
+        public string? user_id { get; set; }
+
+        [Display(Name = "Внутренний ID")]
+        public string? mapped_id { get; set; }
     }
 }

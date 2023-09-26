@@ -1,52 +1,79 @@
-﻿
+﻿@using WebAppForGame.Data
+@using DevExtreme.AspNet.Mvc;
+
 @{
     Layout = "_Layout";
+    ViewBag.currentLayer = 1;
 }
+<main>
+    <div class="header">
+        <div class="left">
+            <h1>Товары</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/Admin">
+                        Admin
+                    </a>
+                </li>
+                /
+                <li><a href="/Products" class="active">Products</a></li>
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div id="data">
+        @(Html.DevExtreme().DataGrid<Products>()
+            .ID("gridContainer")
+            .ShowBorders(false)
+            .ColumnHidingEnabled(true)
+            .Paging(paging => paging.PageSize(15))
+            .RemoteOperations(true)
+            .Editing(e => e.Mode(GridEditMode.Popup)
+            .AllowUpdating(true)
+            .AllowAdding(true)
+            .AllowDeleting(true)
+            .UseIcons(true)
+            .Popup(p => p
+            .Title("Данные о продукте")
+            .ShowTitle(true)
+            .Width(450)
+            .Height(360)
+            )
+            .Form(f => f.Items(items =>
+            {
+                items.AddGroup()
+                .ColCount(2)
+                .ColSpan(2)
+                .Items(groupItems =>
+                {
+                    groupItems.AddSimpleFor(m => m.Name).IsRequired(true).ColSpan(2);
+                    groupItems.AddSimpleFor(m => m.Description).ColSpan(2).Editor(editor => editor.TextArea().Height(100));
+                    groupItems.AddSimpleFor(m => m.Amount);
+                    groupItems.AddSimpleFor(m => m.Coins);
 
-<H2>Products</H2>
+                });
+            }))
+            )
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.Name);
 
+                columns.AddFor(m => m.Description);
 
-@(Html.DevExtreme().DataGrid<WebAppForGame.Data.Products>()
-    .ID("gridContainer")
-    .DataSource(ds => ds.Mvc()
-        .Controller("Products")
-        .LoadAction("Get")
-        .InsertAction("Post")
-        .UpdateAction("Put")
-        .DeleteAction("Delete")
-        .Key("Id")
-    )
-    .Paging(p => p.PageSize(10))
-    .Pager(p => p
-        .ShowPageSizeSelector(true)
-        .AllowedPageSizes(new[] { 10, 25, 50, 100 })
-    )
-    .RemoteOperations(true)
-    .Columns(columns => {
+                columns.AddFor(m => m.Amount).Width(300);
 
-        columns.AddFor(m => m.Id);
+                columns.AddFor(m => m.Coins).Width(300);
 
-        columns.Add()
-            .DataField("Amount")
-            .DataType(GridColumnDataType.Number)
-            // .Format(Format.Currency)
-            .Caption("Сумма");
-
-        columns.Add()
-            .DataField("Name")
-            .Caption("Название");
-
-        columns.Add()
-            .DataField("Coins")
-            .DataType(GridColumnDataType.Number)
-            //.Format(Format.Currency)
-            .Caption("Монеты");
-    })
-    .Editing(e => e
-        .AllowAdding(true)
-        .AllowUpdating(true)
-        .AllowDeleting(true)
-    )
-)
-
-<script src="~/js/index.js"></script>
+                
+            })
+            .DataSource(ds => ds.Mvc()
+                .Controller("ProductsApi")
+                .LoadAction("Get")
+                .InsertAction("Post")
+                .UpdateAction("Put")
+                .DeleteAction("Delete")
+                .Key("Id")
+            )
+            )
+    </div>
+</main>
