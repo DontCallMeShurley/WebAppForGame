@@ -26,7 +26,8 @@ namespace WebAppForGame.Controllers
             var settings = _context.Settings.Select(i => new {
                 i.Id,
                 i.BearerToken,
-                i.MerchantId
+                i.MerchantId,
+                i.AdminPassword
             });
 
             return Json(await DataSourceLoader.LoadAsync(settings, loadOptions));
@@ -53,8 +54,9 @@ namespace WebAppForGame.Controllers
             string ID = nameof(Settings.Id);
             string BEARER_TOKEN = nameof(Settings.BearerToken);
             string MERCHANT_ID = nameof(Settings.MerchantId);
+            string ADMINPASSWORD = nameof(Settings.AdminPassword);
 
-            if(values.Contains(ID)) {
+            if (values.Contains(ID)) {
                 model.Id = Convert.ToInt32(values[ID]);
             }
 
@@ -64,6 +66,10 @@ namespace WebAppForGame.Controllers
 
             if(values.Contains(MERCHANT_ID)) {
                 model.MerchantId = Convert.ToString(values[MERCHANT_ID]);
+            }
+            if (values.Contains(ADMINPASSWORD))
+            {
+                model.AdminPassword = Convert.ToString(values[ADMINPASSWORD]);
             }
         }
 

@@ -228,7 +228,9 @@ namespace WebAppForGame.Repository
 
             var avaliableCoins = await getAvaliableCoins(mappedId);
 
-            var json = new { serial_number = serialNumber, mappedId, avaliableCoins };
+            var number = await _context.UserNumbers.FirstOrDefaultAsync(x => x.user_id == userid) ?? new UserNumber();
+
+            var json = new { serial_number = serialNumber, mappedId, avaliableCoins, number.number };
 
             var userlogin = new userlog_in()
             {
@@ -264,6 +266,15 @@ namespace WebAppForGame.Repository
         {
             var isExist = await _context.userid_mapping.AnyAsync(x => x.mapped_id == userId);
             return isExist;
+        }
+        public async Task CreateUserNumber(string userId, int number)
+        {
+            await _context.UserNumbers.AddAsync(new UserNumber 
+            { 
+                user_id = userId, number = number
+            });
+            await _context.SaveChangesAsync();
+            return;
         }
 
         private async Task checkUserID(string userID)

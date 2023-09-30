@@ -16,7 +16,9 @@ builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+
 builder.Services.AddScoped<MainRepository>();
+builder.Services.AddScoped<AccessRepository>();
 builder.Services.AddScoped<PaymentsRepository>();
 builder.Services.AddScoped<ProductsRepository>();
 

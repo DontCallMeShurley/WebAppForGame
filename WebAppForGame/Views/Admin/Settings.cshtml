@@ -38,6 +38,8 @@
 
             columns.AddFor(m => m.BearerToken).Caption("Токен доступа");
 
+            columns.AddFor(m => m.AdminPassword).Caption("Пароль администратора");
+
         })
         .DataSource(d => d.WebApi().Controller("Settings")
                                 .LoadAction("Get")

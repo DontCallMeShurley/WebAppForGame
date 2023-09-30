@@ -9,6 +9,7 @@ namespace WebAppForGame.Data
         public int Id { get; set; }
         public string? BearerToken { get; set; }
         public string? MerchantId { get; set; }
+        public string? AdminPassword { get; set; }
 
     }
 }

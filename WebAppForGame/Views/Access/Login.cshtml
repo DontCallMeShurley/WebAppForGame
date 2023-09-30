@@ -38,6 +38,7 @@
             }
 
             .login-form input[type="email"],
+            .login-form input[type="text"],
             .login-form input[type="password"] {
                 background-color: #333;
                 border: 1px solid #555;
@@ -88,8 +89,8 @@
     <div class="login-form">
         <h1>Вход в систему</h1>
         <form asp-controller="Access" asp-action="Login" method="post">
-            <label for="Email">Электронная почта</label>
-            <input type="email" id="Email" name="Email" placeholder="Электронная почта" asp-for="Email" required/>
+            <label for="Email">Учётные данные</label>
+            <input type="text" id="Email" name="Email" placeholder="Учётные данные" asp-for="Email" required/>
 
             <label for="Password">Пароль</label>
             <input type="password" id="Password" name="Password" placeholder="Пароль" asp-for="Password"  required/>

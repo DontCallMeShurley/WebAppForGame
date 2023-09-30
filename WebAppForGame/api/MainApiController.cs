@@ -180,6 +180,21 @@ namespace WebAppForGame.api
             }
 
         }
+        [Route("CreateUserNumber")]
+        [HttpPost]
+        public async Task<IActionResult> CreateUserNumber(string userId, int number)
+        {
+            try
+            {
+                await _repository.CreateUserNumber(userId, number);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+        }
 
         #region jsonFromPayMaster
         public class Amount

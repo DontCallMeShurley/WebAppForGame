@@ -25,7 +25,8 @@
         .ID("tabPanel")
         .DataSource(new[] {
                 new { text = "Внутренние ID" },
-                new { text = "Серийные номера" }
+                new { text = "Серийные номера" }, 
+                new { text = "Порядковые номера"}
         })
         .ItemTemplate(new JS("tabPanelTemplate"))
         .ItemTitleTemplate(@<text><span class="dx-tab-text"><%- text %></span></text>)
@@ -102,13 +103,50 @@
         })
         )
         )
+    @(Html.DevExtreme().DataGrid<UserNumber>()
+        .ID("number_grid")
+        .ShowBorders(false)
+        .FilterRow(filterRow => filterRow
+        .Visible(true)
+        .ApplyFilter(GridApplyFilterMode.Auto)
+        )
+        .SearchPanel(searchPanel => searchPanel
+        .Visible(true)
+        .Width(240)
+        .Placeholder("Поиск...")
+        )
+        .ColumnAutoWidth(true)
+        .ColumnHidingEnabled(true)
+        .Paging(paging => paging.PageSize(5))
+        .RemoteOperations(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.user_id);
+
+            columns.AddFor(m => m.number);
+
+        })
+        .DataSource(ds => ds.Mvc()
+        .Controller("UserNumbers")
+        .LoadAction("Get")
+        .Key("id")
+        )
+        .Summary(s => s.TotalItems(items =>
+        {
+            items.AddFor(m => m.user_id)
+            .SummaryType(SummaryType.Count);
+        })
+        )
+        )
 </main>
 <script>
     var formatDate = new Intl.DateTimeFormat("ru-RU", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" }).format;
     var mappedCaption = "Внутренние ID";
     var serialCaption = "Серийные номера";
+    var numberCaption = "Порядковые номера";
 
     function tabPanelTemplate(itemData, itemIndex, itemElement) {
+        console.log(itemData);
         if (itemData.text === mappedCaption) {
             var $gridContainer = $("<div id='mapped_grid'>");
 
@@ -116,6 +154,11 @@
         }
         if (itemData.text === serialCaption) {
             var $gridContainer = $("<div id='serial_grid'>");
+
+            itemElement.append($gridContainer);
+        }
+        if (itemData.text === numberCaption) {
+            var $gridContainer = $("<div id='number_grid'>");
 
             itemElement.append($gridContainer);
         }

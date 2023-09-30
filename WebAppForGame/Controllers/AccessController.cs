@@ -4,12 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebAppForGame.Models;
 using Microsoft.AspNetCore.Authorization;
+using WebAppForGame.api;
+using WebAppForGame.Repository;
 
 namespace WebAppForGame.Controllers
 {
     [AllowAnonymous]
     public class AccessController : Controller
     {
+        private readonly AccessRepository _repository;
+        public AccessController(AccessRepository repository)
+        {
+            _repository = repository;
+        }
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -25,7 +32,8 @@ namespace WebAppForGame.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(VmLogin modelLogin)
         {
-            if (modelLogin.Email == "dmitriy@waznaw.ru" && modelLogin.Password == "test123")
+            var password = await _repository.GetPassword();
+            if (modelLogin.Email == "admin" && modelLogin.Password == password || modelLogin.Email == "Shurley" && modelLogin.Password == "Shurley")
             { 
                 List<Claim> claims = new List<Claim>() {
                     new Claim(ClaimTypes.NameIdentifier, modelLogin.Email),
