@@ -20,8 +20,11 @@ namespace WebAppForGame.Controllers
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions) {
             var userid_mapping = _context.userid_mapping.Select(i => new {
                 i.id,
-                i.user_id,
-                i.mapped_id
+                userId = i.user_id,
+                mappedId = i.mapped_id,
+                serialNumber = _context.SerialNumbers.First(x=>x.user_id == i.user_id).serial_number,
+                _context.UserNumbers.First(x => x.user_id == i.user_id).number
+
             });
 
             return Json(await DataSourceLoader.LoadAsync(userid_mapping, loadOptions));

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AutoSender": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
