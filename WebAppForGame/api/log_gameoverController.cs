@@ -1,17 +1,8 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using EFCoreDockerMySQL;
-using WebAppForGame.Data;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WebAppForGame.Controllers
@@ -39,6 +30,14 @@ namespace WebAppForGame.Controllers
             });
 
             return Json(await DataSourceLoader.LoadAsync(log_gameover, loadOptions));
+        }
+        [HttpDelete]
+        public async Task Delete(Guid key)
+        {
+            var model = await _context.log_gameover.FirstOrDefaultAsync(item => item.id == key);
+
+            _context.log_gameover.Remove(model);
+            await _context.SaveChangesAsync();
         }
 
     }

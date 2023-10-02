@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using EFCoreDockerMySQL;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAppForGame.Controllers
 {
@@ -28,6 +29,14 @@ namespace WebAppForGame.Controllers
             });
 
             return Json(await DataSourceLoader.LoadAsync(userlog_in, loadOptions));
+        }
+        [HttpDelete]
+        public async Task Delete(Guid key)
+        {
+            var model = await _context.userlog_in.FirstOrDefaultAsync(item => item.id == key);
+
+            _context.userlog_in.Remove(model);
+            await _context.SaveChangesAsync();
         }
     }
 }

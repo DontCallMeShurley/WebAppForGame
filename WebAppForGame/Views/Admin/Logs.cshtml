@@ -44,6 +44,12 @@
             .Width(240)
             .Placeholder("Поиск...")
             )
+            .Editing(editing =>
+            {
+                editing.Mode(GridEditMode.Row);
+                editing.AllowDeleting(true);
+                editing.UseIcons(true);
+            })
             .ColumnAutoWidth(true)
             .ColumnHidingEnabled(true)
             .Paging(paging => paging.PageSize(10))
@@ -57,6 +63,12 @@
                 pager.ShowNavigationButtons(true);
             })
             .RemoteOperations(true)
+            .Selection(selection =>
+            {
+                selection.Mode(SelectionMode.Multiple);
+                selection.SelectAllMode(SelectAllMode.Page);
+            })
+            .OnSelectionChanged("onSelectionChanged")
             .Columns(columns =>
             {
 
@@ -70,8 +82,24 @@
             .DataSource(ds => ds.Mvc()
             .Controller("log_gameover")
             .LoadAction("Get")
+            .DeleteAction("Delete")
             .Key("id")
             )
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items =>
+            {
+                items.Add()
+            .Location(ToolbarItemLocation.After)
+            .Widget(w =>
+            w.Button()
+            .Text("Удалить выбранные записи")
+            .Icon("trash")
+            .Disabled(true)
+            .OnClick("onDeleteBtnClick")
+            );
+            });
+            })
             .Summary(s => s.TotalItems(items =>
             {
                 items.AddFor(m => m.user_id)
@@ -104,8 +132,20 @@
             .Width(240)
             .Placeholder("Поиск...")
             )
+            .Editing(editing =>
+            {
+                editing.Mode(GridEditMode.Row);
+                editing.AllowDeleting(true);
+                editing.UseIcons(true);
+            })
             .ColumnAutoWidth(true)
             .ColumnHidingEnabled(true)
+            .Selection(selection =>
+            {
+                selection.Mode(SelectionMode.Multiple);
+                selection.SelectAllMode(SelectAllMode.Page);
+            })
+            .OnSelectionChanged("onSelectionChanged2")
             .Paging(paging => paging.PageSize(10))
             .Pager(pager =>
             {
@@ -127,8 +167,24 @@
             .DataSource(ds => ds.Mvc()
             .Controller("userlog_in")
             .LoadAction("Get")
+            .DeleteAction("Delete")
             .Key("id")
             )
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items =>
+            {
+                items.Add()
+            .Location(ToolbarItemLocation.After)
+            .Widget(w =>
+            w.Button()
+            .Text("Удалить выбранные записи")
+            .Icon("trash")
+            .Disabled(true)
+            .OnClick("onDeleteBtnClick2")
+            );
+            });
+            })
             .Summary(s => s.TotalItems(items =>
             {
                 items.AddFor(m => m.user_id)
@@ -160,6 +216,46 @@
 
             itemElement.append($gridContainer);
         }
+    }
+
+    function onDeleteBtnClick() {
+        var result = DevExpress.ui.dialog.confirm("Удалить выбранные записи?", "Потвердить");
+        result.done(function (dialogResult) {
+            if (!dialogResult)
+                return;
+            let dataGrid = $("#gameover_grid").dxDataGrid("instance");
+            dataGrid.getSelectedRowKeys().forEach((key) => {
+                dataGrid.getDataSource().store().remove(key);
+
+            });
+            dataGrid.clearSelection();
+            dataGrid.getDataSource().reload();
+            return;
+        });
+    }
+    function onDeleteBtnClick2() {
+        var result = DevExpress.ui.dialog.confirm("Удалить выбранные записи?", "Потвердить");
+        result.done(function (dialogResult) {
+            if (!dialogResult)
+                return;
+            let dataGrid = $("#login_grid").dxDataGrid("instance");
+            dataGrid.getSelectedRowKeys().forEach((key) => {
+                dataGrid.getDataSource().store().remove(key);
+
+            });
+            dataGrid.clearSelection();
+            dataGrid.getDataSource().reload();
+            return;
+        });
+    }
+
+    function onSelectionChanged(data) {
+        let dataGrid = $("#gameover_grid").dxDataGrid("instance");
+        dataGrid.option("toolbar.items[0].options.disabled", !data.selectedRowsData.length);
+    }
+    function onSelectionChanged2(data) {
+        let dataGrid = $("#login_grid").dxDataGrid("instance");
+        dataGrid.option("toolbar.items[0].options.disabled", !data.selectedRowsData.length);
     }
 </script>
 <style>
