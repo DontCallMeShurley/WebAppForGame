@@ -40,8 +40,8 @@ namespace WebAppForGame.Repository
                 TotalLoginPerDay = _context.userlog_in.Count(x => x.Date > DateTime.Today),
                 TotalPaid = _context.Payments.Where(x => x.PaymentStatus == StatusPayment.Settled).Sum(x => x.Product != null ? x.Product.Amount : 0),
                 TotalUsers = userIdMapping.Count(),
-                MaxPoints = gameovers.Max(x => x.score),
-                TotalGameOversPerDay = gameovers.Count(x => x.Date > DateTime.Today),
+                MaxPoints = gameovers != null && gameovers.Any() ? gameovers.Max(x => x.score) : 0,
+                TotalGameOversPerDay = gameovers != null && gameovers.Any() ?  gameovers.Count(x => x.Date > DateTime.Today) : 0,
                 Payments = lastPayments
             };
 
@@ -269,9 +269,10 @@ namespace WebAppForGame.Repository
         }
         public async Task CreateUserNumber(string userId, int number)
         {
-            await _context.UserNumbers.AddAsync(new UserNumber 
-            { 
-                user_id = userId, number = number
+            await _context.UserNumbers.AddAsync(new UserNumber
+            {
+                user_id = userId,
+                number = number
             });
             await _context.SaveChangesAsync();
             return;
@@ -359,10 +360,10 @@ namespace WebAppForGame.Repository
 
         private async Task<int> getAvaliableCoins(string mappedId)
         {
-           var avaliableCoins = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).SumAsync(x => x.Product.Coins)
-                               - await _context.Log_GameStart.CountAsync(x => x.UserID == mappedId);
+            var avaliableCoins = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).SumAsync(x => x.Product.Coins)
+                                - await _context.Log_GameStart.CountAsync(x => x.UserID == mappedId);
 
-            return avaliableCoins;
+            return avaliableCoins > 0 ? avaliableCoins : 0;
         }
     }
 }
