@@ -360,10 +360,20 @@ namespace WebAppForGame.Repository
 
         private async Task<int> getAvaliableCoins(string mappedId)
         {
-            var avaliableCoins = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).SumAsync(x => x.Product.Coins)
+            var paymentsByUser = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).ToListAsync();
+
+            var avaliableCoins =  paymentsByUser.Sum(x => x.Product.Coins)
                                 - await _context.Log_GameStart.CountAsync(x => x.UserID == mappedId);
 
-            return avaliableCoins > 0 ? avaliableCoins : 0;
+            if (avaliableCoins > 0)
+            {
+                var today = DateTime.Today;
+                avaliableCoins = avaliableCoins - paymentsByUser.Where(x => (today - x.Date).Days >= 7).Sum(x => x.Product.Coins);
+            }
+            else
+                avaliableCoins = 0;
+
+            return avaliableCoins;
         }
     }
 }
