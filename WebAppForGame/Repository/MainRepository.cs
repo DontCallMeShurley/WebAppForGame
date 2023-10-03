@@ -1,17 +1,14 @@
 ﻿using EFCoreDockerMySQL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Web.Administration;
 using Newtonsoft.Json;
-using System.Security.Policy;
 using System.Text;
-using System.Text.Json;
-using WebAppForGame.Data;
 using WebAppForGame.ViewModels;
 using System.Configuration;
 using System.Net.Http;
 using NLog;
 using WebAppForGame.Enums;
 using WebAppForGame.Dtos;
+using WebAppForGame.Data;
 
 namespace WebAppForGame.Repository
 {

@@ -1,16 +1,5 @@
-﻿using EFCoreDockerMySQL;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Web.Administration;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NLog;
-using System.Text;
-using WebAppForGame.Controllers;
-using WebAppForGame.Data;
 using WebAppForGame.Dtos;
 using WebAppForGame.Repository;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
