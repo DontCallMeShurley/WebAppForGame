@@ -11,7 +11,7 @@ public sealed class EmailSender
         mail.To.Add(new MailAddress("dmitriy@waznaw.ru"));
         mail.To.Add(new MailAddress("mcitylam@gmail.com"));
         mail.To.Add(new MailAddress("lord1of2ultima@gmail.com"));
-        mail.Subject = $"Количество прохождения за {DateTime.Today.ToString("yyyy.MM.dd")} - {logs.Count}";
+        mail.Subject = $"Количество прохождений за {DateTime.Today.ToString("yyyy.MM.dd")} - {logs.Count}";
         mail.IsBodyHtml = true;
 
         string data = "";

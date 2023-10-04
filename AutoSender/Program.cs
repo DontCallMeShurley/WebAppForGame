@@ -26,7 +26,6 @@ namespace MyApp // Note: actual namespace depends on the project name.
                         var listOfPlaying = db.log_gameover.Where(x => x.Date < currDay && x.Date >= currDay.AddDays(-1)).ToList();
                         Console.WriteLine($"found {listOfPlaying.Count}. Go Send");
                         EmailSender.SendEmail(listOfPlaying);
-
                     }
                 });
 
