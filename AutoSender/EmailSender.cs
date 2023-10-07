@@ -15,7 +15,7 @@ public sealed class EmailSender
         mail.IsBodyHtml = true;
 
         string data = "";
-        logs.ForEach(x => data += $"{x.user_id} <b>{x.score}</b><br/>");
+        logs.ForEach(x => data += $"{x.user_id};{x.score}<br/>");
 
 
         mail.Body = data;
