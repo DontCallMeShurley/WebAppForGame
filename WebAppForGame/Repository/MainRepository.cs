@@ -38,7 +38,7 @@ namespace WebAppForGame.Repository
                 TotalPaid = _context.Payments.Where(x => x.PaymentStatus == StatusPayment.Settled).Sum(x => x.Product != null ? x.Product.Amount : 0),
                 TotalUsers = userIdMapping.Count(),
                 MaxPoints = gameovers != null && gameovers.Any() ? gameovers.Max(x => x.score) : 0,
-                TotalGameOversPerDay = gameovers != null && gameovers.Any() ?  gameovers.Count(x => x.Date > DateTime.Today) : 0,
+                TotalGameOversPerDay = gameovers != null && gameovers.Any() ? gameovers.Count(x => x.Date > DateTime.Today) : 0,
                 Payments = lastPayments
             };
 
@@ -71,7 +71,7 @@ namespace WebAppForGame.Repository
                 var paymentRequest = new
                 {
                     merchantId = settings.MerchantId,
-                    testMode = true,
+                    //testMode = true,
                     invoice = new
                     {
                         description = product.Name
@@ -359,18 +359,19 @@ namespace WebAppForGame.Repository
         {
             var paymentsByUser = await _context.Payments.Include(x => x.Product).Where(x => x.UserID == mappedId && x.PaymentStatus == StatusPayment.Settled).ToListAsync();
 
-            var avaliableCoins =  paymentsByUser.Sum(x => x.Product.Coins)
+            var avaliableCoins = paymentsByUser.Sum(x => x.Product.Coins)
                                 - await _context.Log_GameStart.CountAsync(x => x.UserID == mappedId);
 
             if (avaliableCoins > 0)
             {
                 var today = DateTime.Today;
-                avaliableCoins = avaliableCoins - paymentsByUser.Where(x => (today - x.Date).Days >= 7).Sum(x => x.Product.Coins);
+                var totalStart7Days = await _context.Log_GameStart.Where(x => x.UserID == mappedId).ToListAsync();
+                avaliableCoins = avaliableCoins - paymentsByUser.Where(x => (today - x.Date).Days >= 7).Sum(x => x.Product.Coins) + totalStart7Days.Count(x => (today - x.Date).Days >= 7);
             }
             else
                 avaliableCoins = 0;
 
-            return avaliableCoins;
+            return avaliableCoins > 0 ? avaliableCoins : 0;
         }
     }
 }

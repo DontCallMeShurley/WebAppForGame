@@ -73,6 +73,8 @@ namespace WebAppForGame.Controllers
         [HttpDelete]
         public async Task Delete(int key) {
             var model = await _context.Products.FirstOrDefaultAsync(item => item.Id == key);
+            var allPayments = await _context.Payments.Include(x => x.Product).Where(x => x.Product == model).ToListAsync();
+            allPayments.ForEach(x => x.Product = null);
 
             _context.Products.Remove(model);
             await _context.SaveChangesAsync();
